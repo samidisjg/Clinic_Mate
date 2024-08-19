@@ -18,7 +18,8 @@ import { Feather, Ionicons, Octicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import Loading from "../components/Loading";
 import CustomKeyBoardView from "../components/CustomKeyBoardView";
-import { useAuth } from "../context/AuthContextProvider"
+import { useAuth } from "../context/AuthContextProvider";
+import * as ImagePicker from "expo-image-picker";
 
 export default function SignUp() {
   const [passwordVisible, setPasswordVisible] = useState(false);
@@ -29,13 +30,10 @@ export default function SignUp() {
   const emailRef = useRef("");
   const passwordRef = useRef("");
   const usernameRef = useRef();
+  const profileUrlRef = useRef();
 
   const handleSignUp = async () => {
-    if (
-      !emailRef.current ||
-      !passwordRef.current ||
-      !usernameRef.current 
-    ) {
+    if (!emailRef.current || !passwordRef.current || !usernameRef.current || !profileUrlRef.current) {
       Alert.alert("Sign Up", "Please fill all the fields");
       return;
     }
@@ -44,13 +42,26 @@ export default function SignUp() {
     const res = await register(
       emailRef.current,
       passwordRef.current,
-      usernameRef.current
+      usernameRef.current,
+      profileUrlRef.current
     );
     setLoading(false);
-    console.log('got result : ', res);
+    console.log("got result : ", res);
     if (!res.success) {
       Alert.alert("Sign Up", res.msg);
     }
+  };
+
+  const onImagePick = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+    console.log("result : ", result);
+    // if (!result.canceled) {
+    //   setImage(result?.assets[0]?.uri);
+    // }
   };
 
   return (
@@ -60,7 +71,7 @@ export default function SignUp() {
         style={{
           flex: 1,
           gap: 12,
-          paddingTop: hp(5),
+          paddingTop: hp(2),
           paddingHorizontal: wp(5),
         }}
       >
@@ -194,6 +205,33 @@ export default function SignUp() {
                   color="gray"
                 />
               </TouchableOpacity>
+            </View>
+            <View
+              style={{
+                height: hp(7),
+                flexDirection: "row",
+                gap: 10,
+                backgroundColor: "#f5f5f5",
+                alignItems: "center",
+                paddingHorizontal: wp(5),
+                borderRadius: 10,
+                borderColor: Colors.PRIMARY,
+                borderWidth: 1,
+              }}
+            >
+              <Feather name="image" size={hp(2.7)} color="gray" />
+              <TextInput
+                onChangeText={(value) => (profileUrlRef.current = value)}
+                style={{
+                  fontSize: hp(2),
+                  flex: 1,
+                  fontWeight: "semibold",
+                  color: "#404040",
+                  fontFamily: "outfit-medium",
+                }}
+                placeholder="Profile Url"
+                placeholderTextColor={"gray"}
+              />
             </View>
             {/* submit button */}
             <View>

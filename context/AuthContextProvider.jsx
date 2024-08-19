@@ -39,6 +39,7 @@ export default function AuthContextProvider({ children }) {
         ...user,
         username: data.username,
         email: data.email,
+        profileUrl: data.profileUrl,
         userId: data.userId,
       });
     }
@@ -68,13 +69,14 @@ export default function AuthContextProvider({ children }) {
     }
   };
 
-  const register = async (email, password, username) => {
+  const register = async (email, password, username, profileUrl) => {
     try {
       const res = await createUserWithEmailAndPassword(auth, email, password);
       console.log("response.user", res?.user);
       await setDoc(doc(db, "users", res?.user?.uid), {
         username: username,
         email: email,
+        profileUrl: profileUrl,
         userId: res?.user?.uid,
       });
       return { success: true, data: res?.user };
