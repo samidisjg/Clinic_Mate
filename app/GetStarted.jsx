@@ -10,6 +10,7 @@ export default function GetStarted() {
       style={{
         flex: 1,
         alignItems: "center",
+        backgroundColor: "#f5f5f5",
       }}
     >
       <Image

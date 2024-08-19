@@ -10,7 +10,7 @@ export default function AuthContextProvider({ children }) {
   useEffect(() => {
     // onAuthStateChanged
     setTimeout(() => {
-      setIsAuthenticated(true);
+      setIsAuthenticated(false);
     }, 3000);
   })
 
