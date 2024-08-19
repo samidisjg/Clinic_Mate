@@ -62,7 +62,7 @@ export default function SignIn() {
           }}
         >
           <Image
-            source={require("../assets/images/LogIn.png")}
+            source={require("../assets/images/SignIn.png")}
             style={{ height: hp(40) }}
             resizeMode="contain"
           />
@@ -71,7 +71,7 @@ export default function SignIn() {
           style={{
             gap: 10,
             padding: 20,
-            backgroundColor: "#d0f4ce",
+            backgroundColor: "#ccccff",
             borderRadius: 20,
           }}
         >

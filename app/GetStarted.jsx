@@ -31,7 +31,7 @@ export default function GetStarted() {
       />
       <View
         style={{
-          backgroundColor: "#d0f4ce",
+          backgroundColor: "#ccccff",
           padding: 20,
           borderTopLeftRadius: 50,
           borderTopRightRadius: 50,

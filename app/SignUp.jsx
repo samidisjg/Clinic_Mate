@@ -82,7 +82,7 @@ export default function SignUp() {
           }}
         >
           <Image
-            source={require("../assets/images/SignIn.png")}
+            source={require("../assets/images/SignUp.png")}
             style={{ height: hp(40) }}
             resizeMode="contain"
           />
@@ -91,8 +91,9 @@ export default function SignUp() {
           style={{
             gap: 10,
             padding: 20,
-            backgroundColor: "#d0f4ce",
+            backgroundColor: "#ccccff",
             borderRadius: 20,
+            marginBottom: hp(5),
           }}
         >
           <Text
