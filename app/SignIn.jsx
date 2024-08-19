@@ -18,11 +18,13 @@ import { Ionicons, Octicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import Loading from "../components/Loading";
 import CustomKeyBoardView from "../components/CustomKeyBoardView";
+import { useAuth } from "../context/AuthContextProvider";
 
 export default function SignIn() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { login } = useAuth();
 
   const emailRef = useRef("");
   const passwordRef = useRef("");
@@ -33,6 +35,13 @@ export default function SignIn() {
       return;
     }
     // login process
+    setLoading(true);
+    const res = await login(emailRef.current, passwordRef.current);
+    setLoading(false);
+    console.log("Sign In response : ", res);
+    if (!res.success) {
+      Alert.alert("Sign In", res.msg);
+    }
   };
 
   return (

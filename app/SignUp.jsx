@@ -18,11 +18,13 @@ import { Feather, Ionicons, Octicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import Loading from "../components/Loading";
 import CustomKeyBoardView from "../components/CustomKeyBoardView";
+import { useAuth } from "../context/AuthContextProvider"
 
 export default function SignUp() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { register } = useAuth();
 
   const emailRef = useRef("");
   const passwordRef = useRef("");
@@ -38,6 +40,17 @@ export default function SignUp() {
       return;
     }
     // register process
+    setLoading(true);
+    const res = await register(
+      emailRef.current,
+      passwordRef.current,
+      usernameRef.current
+    );
+    setLoading(false);
+    console.log('got result : ', res);
+    if (!res.success) {
+      Alert.alert("Sign Up", res.msg);
+    }
   };
 
   return (
