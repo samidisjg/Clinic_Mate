@@ -19,7 +19,7 @@ export default function AuthContextProvider({ children }) {
   useEffect(() => {
     // onAuthStateChanged
     const unsub = onAuthStateChanged(auth, (user) => {
-      console.log("get user : ", user);
+      // console.log("get user : ", user);
       if (user) {
         setIsAuthenticated(true);
         setUser(user);
