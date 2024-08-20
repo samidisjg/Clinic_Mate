@@ -1,5 +1,12 @@
-import { View, Text, StatusBar, TextInput, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import {
+  View,
+  Text,
+  StatusBar,
+  TextInput,
+  TouchableOpacity,
+  Alert,
+} from "react-native";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import ChatRoomHeader from "../components/IT22577160_Components/ChatRoomHeader";
 import MessageList from "../components/IT22577160_Components/MessageList";
@@ -9,12 +16,76 @@ import {
 } from "react-native-responsive-screen";
 import { Feather } from "@expo/vector-icons";
 import CustomKeyBoardView from "../components/CustomKeyBoardView";
+import { useAuth } from "../context/AuthContextProvider";
+import { getRoomId } from "../utils/common";
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  setDoc,
+  Timestamp,
+} from "firebase/firestore";
+import { db } from "../configs/firebaseConfig";
 
 export default function ChatRoom() {
-  const item = useLocalSearchParams();
+  const item = useLocalSearchParams(); // second user
+  const { user } = useAuth(); // logged in user
   const router = useRouter();
   const [messages, setMessages] = useState([]);
+  const textRef = useRef("");
+  const inputRef = useRef(null);
 
+  useEffect(() => {
+    createRoomIfNotExists();
+    let roomId = getRoomId(user?.userId, item?.userId);
+    const docRef = doc(db, "rooms", roomId);
+    const messageRef = collection(docRef, "messages");
+    const q = query(messageRef, orderBy("createdAt", "asc"));
+
+    let unSub = onSnapshot(q, (snapshot) => {
+      let allMessages = snapshot.docs.map((doc) => {
+        return doc.data();
+      });
+      setMessages(allMessages);
+    });
+    return unSub;
+  }, []);
+
+  const createRoomIfNotExists = async () => {
+    // roomId
+    let roomId = getRoomId(user?.userId, item?.userId);
+    await setDoc(doc(db, "rooms", roomId), {
+      roomId,
+      createdAt: Timestamp.fromDate(new Date()),
+    });
+  };
+
+  const handleSendMessage = async () => {
+    let message = textRef.current.trim();
+    if (!message) return;
+    try {
+      let roomId = getRoomId(user?.userId, item?.userId);
+      const docRef = doc(db, "rooms", roomId);
+      const messageRef = collection(docRef, "messages");
+      textRef.current = "";
+      if (inputRef) {
+        inputRef?.current?.clear();
+      }
+      const newDoc = await addDoc(messageRef, {
+        userId: user?.userId,
+        text: message,
+        profileUrl: user?.profileUrl,
+        senderName: user?.username,
+        createdAt: Timestamp.fromDate(new Date()),
+      });
+    } catch (error) {
+      Alert.alert("Message", error.message);
+    }
+  };
+  
   return (
     <CustomKeyBoardView>
       <View
@@ -41,7 +112,7 @@ export default function ChatRoom() {
           }}
         >
           <View style={{ flex: 1 }}>
-            <MessageList messages={messages} />
+            <MessageList messages={messages} currentUser={user} />
           </View>
           <View
             style={{
@@ -63,6 +134,8 @@ export default function ChatRoom() {
               }}
             >
               <TextInput
+                ref={inputRef}
+                onChangeText={(value) => (textRef.current = value)}
                 placeholder="Type message..."
                 style={{
                   flex: 1,
@@ -72,6 +145,7 @@ export default function ChatRoom() {
                 }}
               />
               <TouchableOpacity
+                onPress={handleSendMessage}
                 style={{
                   backgroundColor: "#e5e5e5",
                   padding: 8,
