@@ -7,17 +7,19 @@ import {
 } from "firebase/auth";
 import { auth, db } from "../configs/firebaseConfig";
 import { doc, getDoc, setDoc } from "firebase/firestore";
+import { useRouter } from "expo-router";
 
 export const AuthContext = createContext();
 
 export default function AuthContextProvider({ children }) {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(undefined);
+  const router = useRouter();
 
   useEffect(() => {
     // onAuthStateChanged
     const unsub = onAuthStateChanged(auth, (user) => {
-      console.log("get user : ", user);
+      // console.log("get user : ", user);
       if (user) {
         setIsAuthenticated(true);
         setUser(user);
@@ -48,6 +50,7 @@ export default function AuthContextProvider({ children }) {
   const login = async (email, password) => {
     try {
       const res = await signInWithEmailAndPassword(auth, email, password);
+      router.replace('/Home');
       return { success: true };
     } catch (e) {
       let msg = e.message;
@@ -63,6 +66,7 @@ export default function AuthContextProvider({ children }) {
   const logout = async () => {
     try {
       await signOut(auth);
+      router.replace('/GetStarted');
       return { success: true };
     } catch (e) {
       return { success: false, msg: e.message, error: e };
@@ -79,6 +83,7 @@ export default function AuthContextProvider({ children }) {
         profileUrl: profileUrl,
         userId: res?.user?.uid,
       });
+      router.replace('/SignIn');
       return { success: true, data: res?.user };
     } catch (e) {
       let msg = e.message;

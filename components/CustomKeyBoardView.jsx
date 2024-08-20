@@ -7,14 +7,22 @@ import React from "react";
 
 const android = Platform.OS === "android";
 
-export default function CustomKeyBoardView({ children }) {
+export default function CustomKeyBoardView({ children, inChat }) {
+  let keyConfig = {};
+  let scrollViewConfig = {};
+  if (inChat) {
+    keyConfig = {keyboardVerticalOffset: 90};
+    scrollViewConfig = {contentContainerStyle: {flex: 1}};
+  }
   return (
     <KeyboardAvoidingView
       behavior={android ? "padding" : "height"}
       style={{ flex: 1, backgroundColor: "#f5f5f5" }}
+      // {...keyConfig}
     >
       <ScrollView
         style={{ flex: 1 }}
+        {...scrollViewConfig}
         bounces={false}
         showsVerticalScrollIndicator={false}
       >
