@@ -5,6 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   Alert,
+  Keyboard,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -37,6 +38,7 @@ export default function ChatRoom() {
   const [messages, setMessages] = useState([]);
   const textRef = useRef("");
   const inputRef = useRef(null);
+  const scrollViewRef = useRef(null);
 
   useEffect(() => {
     createRoomIfNotExists();
@@ -51,7 +53,14 @@ export default function ChatRoom() {
       });
       setMessages(allMessages);
     });
-    return unSub;
+    const KeyboardDisShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      updateScrollView
+    );
+    return () => {
+      unSub();
+      KeyboardDisShowListener.remove();
+    };
   }, []);
 
   const createRoomIfNotExists = async () => {
@@ -85,9 +94,19 @@ export default function ChatRoom() {
       Alert.alert("Message", error.message);
     }
   };
-  
+
+  useEffect(() => {
+    updateScrollView();
+  }, [messages]);
+
+  const updateScrollView = () => {
+    setTimeout(() => {
+      scrollViewRef?.current?.scrollToEnd({ animated: true });
+    }, 100);
+  };
+
   return (
-    <CustomKeyBoardView>
+    <CustomKeyBoardView inChat={true}>
       <View
         style={{
           flex: 1,
@@ -112,7 +131,11 @@ export default function ChatRoom() {
           }}
         >
           <View style={{ flex: 1 }}>
-            <MessageList messages={messages} currentUser={user} />
+            <MessageList
+              scrollViewRef={scrollViewRef}
+              messages={messages}
+              currentUser={user}
+            />
           </View>
           <View
             style={{

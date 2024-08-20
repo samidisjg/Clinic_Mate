@@ -44,7 +44,7 @@ export default function Chats() {
       <ChatHeader />
       <StatusBar style="light" />
       {users.length > 0 ? (
-        <ChatList users={users} />
+        <ChatList users={users} currentUser={user} />
       ) : (
         <View
           style={{

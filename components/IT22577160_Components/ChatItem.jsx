@@ -1,17 +1,55 @@
 import { View, Text, TouchableOpacity, Image } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContextProvider";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { formatDate, getRoomId } from "../../utils/common";
+import { collection, doc, onSnapshot, orderBy, query } from "firebase/firestore";
+import { db } from "../../configs/firebaseConfig";
 
-export default function ChatItem({ item, router, noBorder }) {
+export default function ChatItem({ item, router, noBorder, currentUser }) {
   const { user } = useAuth();
+  const [lastMessage, setLastMessage] = useState(undefined);
 
   const openChatRoom = () => {
     router.push({pathname: '/ChatRoom', params: item})
  }
+
+ useEffect(() => {
+  let roomId = getRoomId(currentUser?.userId, item?.userId);
+  const docRef = doc(db, "rooms", roomId);
+  const messageRef = collection(docRef, "messages");
+  const q = query(messageRef, orderBy("createdAt", "desc"));
+
+  let unSub = onSnapshot(q, (snapshot) => {
+    let allMessages = snapshot.docs.map((doc) => {
+      return doc.data();
+    });
+    setLastMessage(allMessages[0] ? allMessages[0] : null);
+  });
+  return unSub;
+}, []);
+
+const renderTime = () => {
+  if (lastMessage) {
+     let date = lastMessage?.createdAt;
+     return formatDate(new Date(date?.seconds * 1000));
+  }
+}
+
+const renderLastMessage = () => {
+  if(typeof lastMessage === 'undefined') return 'Loading...';
+  if (lastMessage) {
+     if (currentUser?.userId == lastMessage?.userId) {
+        return "You: " + lastMessage?.text;
+     } else {
+        return 'Say Hi 👋'
+     }
+  }
+}
+
   return (
     <TouchableOpacity
       onPress={openChatRoom}
@@ -67,7 +105,7 @@ export default function ChatItem({ item, router, noBorder }) {
               fontFamily: "outfit",
             }}
           >
-            Time
+            {renderTime()}
           </Text>
         </View>
         <Text
@@ -78,7 +116,7 @@ export default function ChatItem({ item, router, noBorder }) {
             fontFamily: "outfit",
           }}
         >
-          last message
+          {renderLastMessage()}
         </Text>
       </View>
     </TouchableOpacity>
