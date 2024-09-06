@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import { Colors } from "../../constants/Colors";
 
 export default function MenuList() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const router = useRouter();
 
   const menuList = [
@@ -13,7 +13,7 @@ export default function MenuList() {
       id: 1,
       name: "Add Mental Health Tips & Guides",
       icon: require("./../../assets/images/add.png"),
-      path: "",
+      path: "/mentalHealth/Add_MentalHealth",
     },
     {
       id: 2,
