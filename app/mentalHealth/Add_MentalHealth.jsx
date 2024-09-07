@@ -21,6 +21,7 @@ import { collection, doc, getDocs, query, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "../../configs/firebaseConfig";
 import { useAuth } from "../../context/AuthContextProvider";
+import CustomKeyBoardView from "../../components/CustomKeyBoardView";
 
 export default function Add_MentalHealth() {
   const navigation = useNavigation();
@@ -89,6 +90,7 @@ export default function Add_MentalHealth() {
         userEmail: user?.email,
       });
       setLoading(false);
+      router.push("mentalHealth/My_MentalHealth");
       ToastAndroid.show(
         "New MentalHealth Tips Added Successfully",
         ToastAndroid.LONG
@@ -99,7 +101,7 @@ export default function Add_MentalHealth() {
   };
 
   return (
-    <>
+    <CustomKeyBoardView>
       <View
         style={{
           marginTop: hp(4),
@@ -151,9 +153,9 @@ export default function Add_MentalHealth() {
           style={{
             fontSize: hp(2.5),
             fontWeight: "medium",
-            color:  Colors.PRIMARY,
+            color: Colors.PRIMARY,
             fontFamily: "outfit-medium",
-            textAlign: "center"
+            textAlign: "center",
           }}
         >
           Add Your Mental Health Tips & Guides
@@ -162,12 +164,24 @@ export default function Add_MentalHealth() {
           {!image ? (
             <Image
               source={require("./../../assets/images/placeholder.png")}
-              style={{ width: 220, height: 220 }}
+              style={{
+                width: 220,
+                height: 220,
+                borderWidth: 1,
+                borderRadius: 15,
+                borderColor: Colors.PRIMARY,
+              }}
             />
           ) : (
             <Image
               source={{ uri: image }}
-              style={{ width: 220, height: 220, borderRadius: 15 }}
+              style={{
+                width: 220,
+                height: 220,
+                borderWidth: 1,
+                borderRadius: 15,
+                borderColor: Colors.PRIMARY
+              }}
             />
           )}
         </TouchableOpacity>
@@ -270,6 +284,6 @@ export default function Add_MentalHealth() {
           )}
         </TouchableOpacity>
       </View>
-    </>
+    </CustomKeyBoardView>
   );
 }

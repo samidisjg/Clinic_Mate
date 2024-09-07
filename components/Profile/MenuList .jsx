@@ -19,7 +19,7 @@ export default function MenuList() {
       id: 2,
       name: "View Mental Health Tips & Guides",
       icon: require("./../../assets/images/add.png"),
-      path: "",
+      path: "/mentalHealth/My_MentalHealth",
     },
     {
       id: 3,
