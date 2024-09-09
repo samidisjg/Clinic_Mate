@@ -6,11 +6,11 @@ import {
 } from "react-native-responsive-screen";
 import { router } from "expo-router";
 import { Entypo } from "@expo/vector-icons";
-import { useAuth } from "../../context/AuthContextProvider";
+import { useAuth } from "../../../context/AuthContextProvider";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../../configs/firebaseConfig";
-import { Colors } from "../../constants/Colors";
-import MentalHealthTipsCard from "../../components/IT22577160_Components/MentalHealthTipsCard";
+import { db } from "../../../configs/firebaseConfig";
+import { Colors } from "../../../constants/Colors";
+import MentalHealthTipsCard from "../../../components/IT22577160_Components/MentalHealthTipsCard";
 
 export default function My_MentalHealth() {
   const { user } = useAuth();

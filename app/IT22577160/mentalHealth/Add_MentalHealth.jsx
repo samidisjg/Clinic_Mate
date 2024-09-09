@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { router, useNavigation } from "expo-router";
-import { Colors } from "../../constants/Colors";
+import { Colors } from "../../../constants/Colors";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import {
   widthPercentageToDP as wp,
@@ -19,9 +19,9 @@ import * as ImagePicker from "expo-image-picker";
 import RNPickerSelect from "react-native-picker-select";
 import { collection, doc, getDocs, query, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { db, storage } from "../../configs/firebaseConfig";
-import { useAuth } from "../../context/AuthContextProvider";
-import CustomKeyBoardView from "../../components/CustomKeyBoardView";
+import { db, storage } from "../../../configs/firebaseConfig";
+import { useAuth } from "../../../context/AuthContextProvider";
+import CustomKeyBoardView from "../../../components/CustomKeyBoardView";
 
 export default function Add_MentalHealth() {
   const navigation = useNavigation();
@@ -88,9 +88,10 @@ export default function Add_MentalHealth() {
         imageUrl: imageUrl,
         username: user?.username,
         userEmail: user?.email,
+        userImage: user?.profileUrl,
       });
       setLoading(false);
-      router.push("mentalHealth/My_MentalHealth");
+      router.push("IT22577160/mentalHealth/My_MentalHealth");
       ToastAndroid.show(
         "New MentalHealth Tips Added Successfully",
         ToastAndroid.LONG
@@ -163,7 +164,7 @@ export default function Add_MentalHealth() {
         <TouchableOpacity style={{ marginTop: 20 }} onPress={onImagePick}>
           {!image ? (
             <Image
-              source={require("./../../assets/images/placeholder.png")}
+              source={require("./../../../assets/images/placeholder.png")}
               style={{
                 width: 220,
                 height: 220,
@@ -256,6 +257,7 @@ export default function Add_MentalHealth() {
               marginTop: 20,
               borderColor: Colors.PRIMARY,
               fontFamily: "outfit",
+              textAlignVertical: "top",
             }}
           />
         </View>

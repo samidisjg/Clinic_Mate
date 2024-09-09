@@ -41,7 +41,7 @@ export default function MentalHealthTipsCard({ item }) {
         borderRadius: 10,
       }}
       onPress={() => {
-        router.push('/mentalHealthTipsDetails/'+ item.id);
+        router.push('/IT22577160/mentalHealthTipsDetails/'+ item.id);
       }}
     >
       <Image
