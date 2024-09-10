@@ -46,6 +46,7 @@ export default function ActionButton({ mentalHealthTips }) {
       style={{
         padding: 20,
         backgroundColor: "#fff",
+        marginTop: -20,
       }}
     >
       <FlatList

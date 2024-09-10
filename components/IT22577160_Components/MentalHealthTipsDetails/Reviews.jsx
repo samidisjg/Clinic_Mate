@@ -42,6 +42,7 @@ export default function Reviews({ mentalHealthTips }) {
       style={{
         padding: 20,
         backgroundColor: "#fff",
+        marginTop: -20,
       }}
     >
       <Text
@@ -117,7 +118,6 @@ export default function Reviews({ mentalHealthTips }) {
               borderWidth: 1,
               borderColor: Colors.GRAY,
               borderRadius: 15,
-              marginTop: 10,
               width: "100%",
             }}
           >

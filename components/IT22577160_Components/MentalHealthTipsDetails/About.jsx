@@ -8,6 +8,7 @@ export default function About({ mentalHealthTips }) {
       style={{
         padding: 20,
         backgroundColor: "#fff",
+        marginTop: -20,
       }}
     >
       <Text
