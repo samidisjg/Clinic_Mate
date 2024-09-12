@@ -1,25 +1,32 @@
-import { View, Text, FlatList, TouchableOpacity, Image, Share } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Image,
+  Share,
+} from "react-native";
 import React from "react";
 import { useAuth } from "../../context/AuthContextProvider";
 import { useRouter } from "expo-router";
 import { Colors } from "../../constants/Colors";
 
 export default function MenuList() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
   const router = useRouter();
 
   const menuList = [
-    {
+    user?.email === "messi@gmail.com" && {
       id: 1,
       name: "Add Mental Health Tips & Guides",
       icon: require("./../../assets/images/add.png"),
-      path: "",
+      path: "/IT22577160/mentalHealth/Add_MentalHealth",
     },
-    {
+    user?.email === "messi@gmail.com" && {
       id: 2,
       name: "View Mental Health Tips & Guides",
       icon: require("./../../assets/images/add.png"),
-      path: "",
+      path: "/IT22577160/mentalHealth/My_MentalHealth",
     },
     {
       id: 3,
