@@ -1,11 +1,39 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity, Alert, ToastAndroid } from "react-native";
 import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Colors } from "../../../constants/Colors";
+import { useAuth } from "../../../context/AuthContextProvider";
 
 export default function Intro({ mentalHealthTips }) {
+  const { user } = useAuth();
   const router = useRouter();
+
+  const onDelete = () => {
+    Alert.alert(
+      "Do you want to Delete Business?",
+      "Are you sure you want to delete this business?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => deleteBusiness(),
+        },
+      ]
+    );
+  };
+
+  const deleteBusiness = async () => {
+    console.log("Delete Business");
+    await deleteDoc(doc(db, "mentalHealthTips", mentalHealthTips?.id));
+    router.back();
+    ToastAndroid.show("Business Deleted Successfully", ToastAndroid.LONG);
+  };
+
   return (
     <View>
       <View
@@ -65,8 +93,8 @@ export default function Intro({ mentalHealthTips }) {
             fontSize: 12,
             fontFamily: "outfit",
             flexShrink: 1,
-            backgroundColor: Colors.GRAY,
-            color: Colors.PRIMARY,
+            backgroundColor: Colors.PRIMARY,
+            color: "#fff",
             fontWeight: "bold",
             padding: 10,
             borderRadius: 10,
@@ -75,6 +103,18 @@ export default function Intro({ mentalHealthTips }) {
         >
           {mentalHealthTips?.category}
         </Text>
+        {
+          user?.email === "messi@gmail.com" && (
+          <TouchableOpacity
+            style={{
+              paddingLeft: 10,
+            }}
+            onPress={() => onDelete()}
+          >
+            <Ionicons name="trash" size={24} color="red" />
+          </TouchableOpacity>
+          )
+        }
       </View>
     </View>
   );
