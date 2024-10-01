@@ -16,6 +16,23 @@ export default function MenuList() {
   const router = useRouter();
 
   const menuList = [
+
+    user?.email === "tatan@gmail.com" && {
+      id: 5,
+      name: "Add Physio Exercises",
+      icon: require("./../../assets/images/add.png"),
+      path: "/IT22607232/Add_Exercises/Add_PhysioExercises",
+    }, user?.email === "tatan@gmail.com" &&{
+      id: 6,
+      name: "View Physio Exercises",
+      icon: require("./../../assets/images/add.png"),
+      path: "/IT22607232/Add_Exercises/View_PhysioExercises",
+    }, {
+      id: 7,
+      name: "Physio health Videos",
+      icon: require("./../../assets/images/add.png"),
+      path: "/IT22607232/Add_Exercises/View_PhysioExercises",
+    },
     user?.email === "messi@gmail.com" && {
       id: 1,
       name: "Add Mental Health Tips & Guides",
@@ -28,6 +45,7 @@ export default function MenuList() {
       icon: require("./../../assets/images/add.png"),
       path: "/IT22577160/mentalHealth/My_MentalHealth",
     },
+
     {
       id: 3,
       name: "Share App",
@@ -40,7 +58,7 @@ export default function MenuList() {
       icon: require("./../../assets/images/logout.png"),
       path: "logout",
     },
-  ];
+  ].filter(Boolean); // Filter out any false values;
 
   const onMenuClick = async (item) => {
     if (item.path == "logout") {
