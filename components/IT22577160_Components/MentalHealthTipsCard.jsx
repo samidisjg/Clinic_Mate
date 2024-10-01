@@ -47,9 +47,10 @@ export default function MentalHealthTipsCard({ item }) {
       <Image
         source={{ uri: item?.imageUrl }}
         style={{
-          width: 331,
-          height: 200,
+          width: 310,
+          height: 150,
           borderRadius: 10,
+          gap: 10,
         }}
       />
       <View
@@ -91,20 +92,34 @@ export default function MentalHealthTipsCard({ item }) {
       >
         <Text
           style={{
+            fontFamily: "outfit",
+            backgroundColor: Colors.PRIMARY,
+            color: "#fff",
+            padding: 3,
             fontSize: 12,
-            fontFamily: "outfit-bold",
-            color: Colors.PRIMARY,
+            borderRadius: 5,
           }}
         >
           {item?.category}
         </Text>
-        {
-          user?.email === 'messi@gmail.com' && (
-            <TouchableOpacity onPress={() => onDelete()}>
-              <MaterialIcons name="delete" size={24} color={Colors.PRIMARY}/>
-            </TouchableOpacity>
-          )
-        }
+        <View style={{
+          flexDirection: 'row'
+        }}>
+          {
+            user?.email === 'messi@gmail.com' && (
+              <TouchableOpacity onPress={() => router.push('/IT22577160/editMentalHealth/' + item.id)}>
+                <MaterialIcons name="edit" size={24} color={Colors.PRIMARY}/>
+              </TouchableOpacity>
+            )
+          }
+          {
+            user?.email === 'messi@gmail.com' && (
+              <TouchableOpacity onPress={() => onDelete()}>
+                <MaterialIcons name="delete" size={24} color={Colors.PRIMARY}/>
+              </TouchableOpacity>
+            )
+          }
+        </View>
       </View>
     </TouchableOpacity>
   );

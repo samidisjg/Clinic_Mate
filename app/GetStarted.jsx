@@ -1,4 +1,4 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
 import React from "react";
 import { Colors } from "./../constants/Colors";
 import { useRouter } from "expo-router";
@@ -6,12 +6,15 @@ import { useRouter } from "expo-router";
 export default function GetStarted() {
   const router = useRouter();
   return (
-    <View
-      style={{
-        flex: 1,
-        alignItems: "center",
-        backgroundColor: "#f5f5f5",
-      }}
+    <ScrollView
+    style={{
+      flex: 1,
+      backgroundColor: "#f5f5f5",
+    }}
+    contentContainerStyle={{
+      alignItems: "center",
+    }}
+  
     >
       <Image
         source={require("./../assets/images/logo.png")}
@@ -92,6 +95,6 @@ export default function GetStarted() {
           </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   );
 }

@@ -47,7 +47,7 @@ export default function Intro({ mentalHealthTips }) {
           padding: 20,
         }}
       >
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={() => router.push("Home")}>
           <Ionicons name="arrow-back-circle" size={40} color={Colors.PRIMARY} />
         </TouchableOpacity>
         <Ionicons
