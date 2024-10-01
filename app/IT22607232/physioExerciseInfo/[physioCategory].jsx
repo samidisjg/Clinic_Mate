@@ -6,7 +6,7 @@ import { db } from '../../../configs/firebaseConfig';
 import { Colors } from '../../../constants/Colors';
 
 export default function PhysioExercisesId() {
-  const { PhysioExercisesId } = useLocalSearchParams();
+  const { physioCategory } = useLocalSearchParams();
   const [physioExercises, setPhysioExercises] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -14,12 +14,12 @@ export default function PhysioExercisesId() {
     if (PhysioExercisesId) {
       GetPhysioExercisesById();
     }
-  }, [PhysioExercisesId]);
+  }, [physioCategory]);
 
   const GetPhysioExercisesById = async () => {
     setLoading(true);
     try {
-      const docRef = doc(db, "physioExercises", PhysioExercisesId);
+      const docRef = doc(db, "physioExercises", physioCategory);
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         console.log("Document data:", docSnap.data());

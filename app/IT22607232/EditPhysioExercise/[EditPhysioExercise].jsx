@@ -72,7 +72,7 @@ import {
     };
   
     // Update the mental health tip, including the image
-    const onUpdateTip = async () => {
+    const onUpdateExercise = async () => {
       setLoading(true);
       let imageUrl = image; // Default to the existing image URL
   
@@ -259,7 +259,7 @@ import {
                   borderRadius: 10,
                   marginTop: 20,
                 }}
-                onPress={onUpdateTip}
+                onPress={onUpdateExercise}
                 disabled={loading}
               >
                 <Text
