@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Colors } from "../../constants/Colors";
 import { collection, getDocs, limit, query } from "firebase/firestore";
 import { db } from "../../configs/firebaseConfig";
-import PopularMentalHealthTipsCard from "./PopularMentalHealthTipsCard";
+import TrendingPhysioExercisesCard from "./TrendingPhysioExercisesCard";
 
 export default function TrendingPhysiotherapyEx() {
   const [PhysioExercises, setPhysioExercises] = useState([]);
@@ -54,7 +54,8 @@ export default function TrendingPhysiotherapyEx() {
          horizontal={true}
          showsHorizontalScrollIndicator={false}
          renderItem={({ item, index }) => (
-            <PopularMentalHealthTipsCard key={index} tips={item} />
+            <TrendingPhysioExercisesCard
+             key={index} exercises={item} />
          )}
       />
       </View>

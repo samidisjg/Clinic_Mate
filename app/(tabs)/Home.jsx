@@ -32,7 +32,6 @@ export default function Home() {
         <View style={{ width: '100%', marginTop: 20 }}>
           <PopularMentalHealthTips />
           <TrendingPhysiotherapyEx/>
-          
         </View>
       </ScrollView>
     </View>
