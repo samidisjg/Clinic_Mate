@@ -102,13 +102,24 @@ export default function MentalHealthTipsCard({ item }) {
         >
           {item?.category}
         </Text>
-        {
-          user?.email === 'messi@gmail.com' && (
-            <TouchableOpacity onPress={() => onDelete()}>
-              <MaterialIcons name="delete" size={24} color={Colors.PRIMARY}/>
-            </TouchableOpacity>
-          )
-        }
+        <View style={{
+          flexDirection: 'row'
+        }}>
+          {
+            user?.email === 'messi@gmail.com' && (
+              <TouchableOpacity onPress={() => router.push('/IT22577160/editMentalHealth/' + item.id)}>
+                <MaterialIcons name="edit" size={24} color={Colors.PRIMARY}/>
+              </TouchableOpacity>
+            )
+          }
+          {
+            user?.email === 'messi@gmail.com' && (
+              <TouchableOpacity onPress={() => onDelete()}>
+                <MaterialIcons name="delete" size={24} color={Colors.PRIMARY}/>
+              </TouchableOpacity>
+            )
+          }
+        </View>
       </View>
     </TouchableOpacity>
   );
