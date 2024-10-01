@@ -47,9 +47,10 @@ export default function MentalHealthTipsCard({ item }) {
       <Image
         source={{ uri: item?.imageUrl }}
         style={{
-          width: 331,
-          height: 200,
+          width: 310,
+          height: 150,
           borderRadius: 10,
+          gap: 10,
         }}
       />
       <View
@@ -91,9 +92,12 @@ export default function MentalHealthTipsCard({ item }) {
       >
         <Text
           style={{
+            fontFamily: "outfit",
+            backgroundColor: Colors.PRIMARY,
+            color: "#fff",
+            padding: 3,
             fontSize: 12,
-            fontFamily: "outfit-bold",
-            color: Colors.PRIMARY,
+            borderRadius: 5,
           }}
         >
           {item?.category}
