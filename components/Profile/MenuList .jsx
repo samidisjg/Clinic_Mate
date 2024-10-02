@@ -34,6 +34,13 @@ export default function MenuList() {
       icon: require("./../../assets/images/seeVideo.png"),
       path: "/IT22607232/Add_Exercises/Add_PhysioVideos",
     },
+    {
+      id: 1,
+      name: "Physio Videos",
+      icon: require("./../../assets/images/seeVideo.png"),
+      path: "/IT22607232/Add_Exercises/View_PhysioExercises",
+    },
+
     user?.email === "messi@gmail.com" && {
       id: 1,
       name: "Add Mental Health Tips & Guides",
