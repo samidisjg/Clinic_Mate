@@ -20,19 +20,27 @@ export default function MenuList() {
     user?.email === "tatan@gmail.com" && {
       id: 5,
       name: "Add Physio Exercises",
-      icon: require("./../../assets/images/add.png"),
+      icon: require("./../../assets/images/AddPy.png"),
       path: "/IT22607232/Add_Exercises/Add_PhysioExercises",
     }, user?.email === "tatan@gmail.com" &&{
       id: 6,
       name: "View Physio Exercises",
-      icon: require("./../../assets/images/add.png"),
+      icon: require("./../../assets/images/View.png"),
       path: "/IT22607232/Add_Exercises/View_PhysioExercises",
-    }, {
+
+    },user?.email === "tatan@gmail.com" && {
       id: 7,
-      name: "Physio health Videos",
-      icon: require("./../../assets/images/add.png"),
+      name: "Upload Physio Exercise Videos",
+      icon: require("./../../assets/images/seeVideo.png"),
+      path: "/IT22607232/Add_Exercises/Add_PhysioVideos",
+    },
+    {
+      id: 1,
+      name: "Physio Videos",
+      icon: require("./../../assets/images/seeVideo.png"),
       path: "/IT22607232/Add_Exercises/View_PhysioExercises",
     },
+
     user?.email === "messi@gmail.com" && {
       id: 1,
       name: "Add Mental Health Tips & Guides",
