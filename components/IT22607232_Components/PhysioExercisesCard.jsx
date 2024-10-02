@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, Alert, ToastAndroid } from "react-native";
+import { View, Text, TouchableOpacity, Alert, ToastAndroid } from "react-native";
 import React from "react";
 import { Colors } from "../../constants/Colors";
 import { useRouter } from "expo-router";
@@ -6,6 +6,8 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { useAuth } from "../../context/AuthContextProvider";
 import { deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../configs/firebaseConfig";
+import { Video } from "expo-av"; // Import Video component
+import { Image } from "react-native"; // Import Image component
 
 export default function PhysioExercisesCard({ item }) {
   const router = useRouter();
@@ -20,9 +22,9 @@ export default function PhysioExercisesCard({ item }) {
       {
         text: 'Delete',
         style: 'destructive',
-        onPress:() => deleteBusiness()
+        onPress: () => deleteBusiness()
       }
-    ])
+    ]);
   }
 
   const deleteBusiness = async () => {
@@ -41,18 +43,33 @@ export default function PhysioExercisesCard({ item }) {
         borderRadius: 10,
       }}
       onPress={() => {
-        router.push('/IT22607232/physioExerciseInfo/'+ item.id);
+        router.push('/IT22607232/physioExerciseInfo/' + item.id);
       }}
     >
-      <Image
-        source={{ uri: item?.imageUrl }}
-        style={{
-          width: 310,
-          height: 150,
-          borderRadius: 10,
-          gap: 10,
-        }}
-      />
+      {/* Conditionally render Video or Image */}
+      {item?.videoUrl ? (
+        <Video
+          source={{ uri: item?.videoUrl }} // Use videoUrl if available
+          style={{
+            width: 310,
+            height: 150,
+            borderRadius: 10,
+          }}
+          useNativeControls // Add controls for play, pause, etc.
+          resizeMode="contain" // Adjust how the video fits the container
+          isLooping // Loop the video
+        />
+      ) : (
+        <Image
+          source={{ uri: item?.imageUrl }} // Fallback to imageUrl
+          style={{
+            width: 310,
+            height: 150,
+            borderRadius: 10,
+            gap: 10,
+          }}
+        />
+      )}
       <View
         style={{
           paddingTop: 10,
@@ -108,14 +125,14 @@ export default function PhysioExercisesCard({ item }) {
           {
             user?.email === 'tatan@gmail.com' && (
               <TouchableOpacity onPress={() => router.push('/IT22607232/EditPhysioExercise/' + item.id)}>
-                <MaterialIcons name="edit" size={24} color={Colors.PRIMARY}/>
+                <MaterialIcons name="edit" size={24} color={Colors.PRIMARY} />
               </TouchableOpacity>
             )
           }
           {
             user?.email === 'tatan@gmail.com' && (
               <TouchableOpacity onPress={() => onDelete()}>
-                <MaterialIcons name="delete" size={24} color={Colors.PRIMARY}/>
+                <MaterialIcons name="delete" size={24} color={Colors.PRIMARY} />
               </TouchableOpacity>
             )
           }
