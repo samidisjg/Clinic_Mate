@@ -50,7 +50,7 @@ export default function MenuList() {
     user?.email === "messi@gmail.com" && {
       id: 2,
       name: "View Mental Health Tips & Guides",
-      icon: require("./../../assets/images/add.png"),
+      icon: require("./../../assets/images/View.png"),
       path: "/IT22577160/mentalHealth/My_MentalHealth",
     },
 
