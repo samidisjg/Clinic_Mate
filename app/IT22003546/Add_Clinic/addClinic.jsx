@@ -1,0 +1,124 @@
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  TextInput,
+  ToastAndroid,
+} from "react-native";
+import { useRouter } from "expo-router";
+import { Colors } from "../../../constants/Colors";
+import { Entypo } from "@expo/vector-icons";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { collection, doc, setDoc } from "firebase/firestore";
+import { db } from "../../../configs/firebaseConfig";
+import { useAuth } from "../../../context/AuthContextProvider";
+import CustomKeyBoardView from "../../../components/CustomKeyBoardView";
+import ClinicHeader from "../../../components/IT22003546_Components/ClinicHeader";
+
+export default function Add_Clinic() {
+  const router = useRouter();
+  const [clinicName, setClinicName] = useState("");
+  const [hospitalName, setHospitalName] = useState(""); // New field for hospital name
+  const [clinicDays, setClinicDays] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    // Set header title
+  }, []);
+
+  const onAddNewClinic = async () => {
+    setLoading(true); // Show loading indicator
+    try {
+      // Validate inputs
+      if (!clinicName || !hospitalName || !clinicDays) {
+        throw new Error("Please fill all the fields.");
+      }
+
+      await setDoc(doc(db, "clinics", Date.now().toString()), {
+        name: clinicName,
+        hospital: hospitalName, // Added hospital field
+        days: clinicDays.split(",").map(day => day.trim()), // Store days as an array
+      });
+
+      ToastAndroid.show("New Clinic Added Successfully", ToastAndroid.LONG);
+      router.push("/IT22003546/Add_Clinic/MyClinics"); // Navigate to the clinics page
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <CustomKeyBoardView>
+      <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
+        <ClinicHeader />
+
+        <View
+          style={{
+            marginTop: hp(1),
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingHorizontal: wp(5),
+          }}
+        >
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+            <TouchableOpacity onPress={() => router.push("/IT22003546/Add_Clinic/MyClinics")}>
+              <Entypo name="chevron-left" size={hp(4)} color="#737373" />
+            </TouchableOpacity>
+            <Text style={{ fontSize: hp(2), fontWeight: "medium", color: "#262626", fontFamily: "outfit-medium" }}>
+              Add Clinic
+            </Text>
+          </View>
+        </View>
+
+        <View style={{ height: 8, borderBottomWidth: 1, borderBottomColor: "#d4d4d4" }} />
+        
+        <View style={{ padding: 20 }}>
+          <Text style={{ fontSize: hp(2.5), fontWeight: "medium", color: Colors.PRIMARY, fontFamily: "outfit-medium", textAlign: "center" }}>
+            Add Your Clinic
+          </Text>
+          
+          <View style={{ marginTop: 30, gap: 10, padding: 20, backgroundColor: "#ccccff", borderRadius: 20 }}>
+            <TextInput
+              placeholder="Clinic Name"
+              value={clinicName}
+              onChangeText={setClinicName}
+              style={{ padding: 10, borderWidth: 1, borderRadius: 10, fontSize: 17, backgroundColor: "#fff", borderColor: Colors.PRIMARY }}
+            />
+            <TextInput
+              placeholder="Hospital Name"
+              value={hospitalName}
+              onChangeText={setHospitalName} // Added input for hospital name
+              style={{ padding: 10, borderWidth: 1, borderRadius: 10, fontSize: 17, backgroundColor: "#fff", borderColor: Colors.PRIMARY }}
+            />
+            <TextInput
+              placeholder="Days (e.g. Monday, Tuesday)"
+              value={clinicDays}
+              onChangeText={setClinicDays}
+              style={{ padding: 10, borderWidth: 1, borderRadius: 10, fontSize: 17, backgroundColor: "#fff", borderColor: Colors.PRIMARY }}
+            />
+          </View>
+
+          <TouchableOpacity
+            disabled={loading}
+            style={{ backgroundColor: Colors.PRIMARY, padding: 15, borderRadius: 10, marginTop: 20 }}
+            onPress={onAddNewClinic}
+          >
+            {loading ? (
+              <ActivityIndicator size={"large"} color={"#fff"} />
+            ) : (
+              <Text style={{ textAlign: "center", color: "#fff", fontFamily: "outfit-medium" }}>
+                Add Clinic
+              </Text>
+            )}
+          </TouchableOpacity>
+        </View>
+      </View>
+    </CustomKeyBoardView>
+  );
+}

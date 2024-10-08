@@ -27,6 +27,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="Clinic"
+        options={{
+          tabBarLabel: "Clinic",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="medkit" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="Chats"
         options={{
           tabBarLabel: "Chat",
