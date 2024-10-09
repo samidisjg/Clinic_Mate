@@ -13,6 +13,7 @@ import { db } from "../../../configs/firebaseConfig"; // Adjust according to you
 import { collection, getDocs } from "firebase/firestore";
 import ClinicHeader from "../../../components/IT22003546_Components/ClinicHeader";
 
+
 export default function EnrollForClinic() {
   const router = useRouter();
   const [hospital, setHospital] = useState("Any Hospital");

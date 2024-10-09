@@ -26,6 +26,7 @@ import {
     const [patientCount, setPatientCount] = useState(""); // New field for patient count
     const [startTime, setStartTime] = useState(""); // New field for start time
     const [endTime, setEndTime] = useState(""); // New field for end time
+    const [location, setLocation] = useState(""); // New field for location
     const [loading, setLoading] = useState(false);
     const { clinicId } = useLocalSearchParams();
 
@@ -52,13 +53,14 @@ import {
           name: sessionName,
           date: sessionDate,
           doctor: doctorName,
+          location: location,
           patientCount: parseInt(patientCount, 10), // Convert patient count to a number
           startTime: startTime, // Store start time
           endTime: endTime, // Store end time
         });
   
         ToastAndroid.show("New Session Added Successfully", ToastAndroid.LONG);
-        router.push("IT22003546/Add_Session/MySession"); // Change the route to your sessions page
+        router.push("IT22003546/clinicDetails"); // Change the route to your sessions page
       } catch (error) {
         console.error("Error adding document: ", error);
       } finally {
@@ -133,6 +135,19 @@ import {
               <TextInput
                 placeholder="Doctor Name"
                 onChangeText={setDoctorName}
+                style={{
+                  padding: 10,
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  fontSize: 17,
+                  backgroundColor: "#fff",
+                  marginBottom: 20,
+                  borderColor: Colors.PRIMARY,
+                }}
+              />
+              <TextInput
+                placeholder="Location"
+                onChangeText={setLocation}
                 style={{
                   padding: 10,
                   borderWidth: 1,

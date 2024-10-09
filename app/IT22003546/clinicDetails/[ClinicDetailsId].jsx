@@ -1,20 +1,21 @@
-import { View, Text, ActivityIndicator, ScrollView, TouchableOpacity, ToastAndroid } from 'react-native';
+import { View, Text, ActivityIndicator, ScrollView, TouchableOpacity, ToastAndroid, Alert } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { doc, getDoc, collection, getDocs, query, where, updateDoc, arrayUnion } from 'firebase/firestore';
+import { doc, getDoc, collection, getDocs, query, where, updateDoc, arrayUnion, deleteDoc } from 'firebase/firestore';
 import { db } from '../../../configs/firebaseConfig';
 import { Colors } from '../../../constants/Colors';
 import ClinicHeader from "../../../components/IT22003546_Components/ClinicHeader";
 import { useAuth } from '../../../context/AuthContextProvider';
+import { MaterialIcons, FontAwesome } from '@expo/vector-icons'; // Import the icons
+
 
 export default function ClinicDetailsId() {
     const [clinicDetails, setClinicDetails] = useState(null);
     const [loading, setLoading] = useState(false);
     const [sessions, setSessions] = useState([]);
-    const [isEnrolled, setIsEnrolled] = useState(false); // State to track enrollment status
+    const [isEnrolled, setIsEnrolled] = useState(false);
     const { user } = useAuth();
     const router = useRouter();
-
     const { ClinicDetailsId } = useLocalSearchParams();
     
     useEffect(() => {
@@ -34,9 +35,8 @@ export default function ClinicDetailsId() {
             if (docSnap.exists()) {
                 const data = docSnap.data();
                 setClinicDetails({ id: docSnap.id, ...data });
-                // Check if the user is already enrolled
                 if (data.enrolledUsers && data.enrolledUsers.includes(user.email)) {
-                    setIsEnrolled(true); // User is enrolled
+                    setIsEnrolled(true);
                 }
             } else {
                 console.log("No such document!");
@@ -74,12 +74,31 @@ export default function ClinicDetailsId() {
                 enrolledUsers: arrayUnion(user.email),
             });
             ToastAndroid.show("Successfully enrolled in the clinic!", ToastAndroid.LONG);
-            setIsEnrolled(true); // Set the state to enrolled
-            router.push("/Clinic"); // Navigate to another screen
+            setIsEnrolled(true);
+            router.push("/Clinic");
         } catch (error) {
             console.error("Error enrolling in clinic: ", error);
             ToastAndroid.show("Failed to enroll in clinic. Please try again.", ToastAndroid.LONG);
         }
+    };
+
+    const deleteSession = async (sessionId) => {
+        Alert.alert('Delete Session', 'Are you sure you want to delete this session?', [
+            { text: 'Cancel', style: 'cancel' },
+            { text: 'Delete', style: 'destructive', onPress: async () => {
+                try {
+                    await deleteDoc(doc(db, 'sessions', sessionId));
+                    ToastAndroid.show('Session Deleted Successfully', ToastAndroid.LONG);
+                    fetchSessions(); // Refresh the sessions after deletion
+                } catch (error) {
+                    console.error("Error deleting session: ", error);
+                }
+            }},
+        ]);
+    };
+
+    const updateSession = async (sessionId) => {
+        router.push(`/IT22003546/updateSession/` + sessionId); // Navigate to update session page with session ID
     };
 
     return (
@@ -111,7 +130,6 @@ export default function ClinicDetailsId() {
                                             borderRadius: 10,
                                             marginTop: 20,
                                         }}
-                                        onPress={enrollInClinic}
                                     >
                                         <Text style={{ textAlign: 'center', color: '#fff', fontSize: 16 }}>
                                             Enrolled
@@ -136,7 +154,7 @@ export default function ClinicDetailsId() {
                                     <Text style={{ fontSize: 18, marginTop: 0, fontWeight: 'bold' }}>
                                         Upcoming Sessions
                                     </Text>
-                                    {user.email === 'tommy1914@gmail.com' && ( // Check if the user's email matches
+                                    {user.email === 'tommy1914@gmail.com' && (
                                         <TouchableOpacity onPress={() => router.push(`/IT22003546/Add_Session/addSession?clinicId=${clinicDetails.id}`)}>
                                             <Text style={{ color: '#007BFF' }}>Add Sessions</Text>
                                         </TouchableOpacity>
@@ -163,11 +181,18 @@ export default function ClinicDetailsId() {
                                             </View>
                                             <View style={{ paddingHorizontal: 10 }}>
                                                 <Text style={{ fontSize: 16, fontWeight: 'bold' }}>{session.doctor}</Text>
-                                                <Text style={{ fontSize: 14, color: '#757575' }}>{`L${session.doctor}`}</Text> 
+                                                <Text style={{ fontSize: 14, color: '#757575' }}>{`L${session.location}`}</Text> 
                                             </View>
-                                            <TouchableOpacity onPress={() => {/* Add your more options functionality here */}}>
-                                                <Text style={{ fontSize: 16, color: '#007BFF' }}>...</Text> 
-                                            </TouchableOpacity>
+                                            {user.email === 'tommy1914@gmail.com' && (
+                                                <TouchableOpacity onPress={() => deleteSession(session.id)} style={{ marginRight: 10 }}>
+                                                    <MaterialIcons name="delete" size={24} color="#FF5722" /> 
+                                                </TouchableOpacity>
+                                            )}
+                                            {user.email === 'tommy1914@gmail.com' && (
+                                                <TouchableOpacity onPress={() => updateSession(session.id)}>
+                                                    <FontAwesome name="edit" size={24} color="#007BFF" />
+                                                </TouchableOpacity>
+                                            )}
                                         </View>
                                     )) : (
                                         <Text style={{ textAlign: "center", color: Colors.GRAY }}>No upcoming sessions available.</Text>

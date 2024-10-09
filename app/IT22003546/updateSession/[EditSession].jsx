@@ -16,14 +16,18 @@ import {
   
   export default function EditSession() {
     const router = useRouter();
-    const { sessionId } = useLocalSearchParams(); // Fetch the session ID from route params
+    const { EditSession } = useLocalSearchParams(); // Fetch the session ID from route params
+    const [clinicId, setClinicId] = useState(""); // New field for clinic ID
     const [sessionName, setSessionName] = useState("");
     const [sessionDate, setSessionDate] = useState(""); // New field for session date
     const [doctorName, setDoctorName] = useState(""); // New field for doctor name
+    const [startTime, setStartTime] = useState(""); // New field for start time
+    const [endTime, setEndTime] = useState(""); // New field for end time
     const [patientCount, setPatientCount] = useState(""); // New field for patient count
+    const [location, setLocation] = useState(""); // New field for location
     const [loading, setLoading] = useState(false);
   
-    console.log("Session ID:", sessionId); // Log the session ID
+    console.log("Session ID:", EditSession); // Log the session ID
   
     useEffect(() => {
       fetchSessionDetails();
@@ -33,15 +37,19 @@ import {
     const fetchSessionDetails = async () => {
       setLoading(true);
       try {
-        const docRef = doc(db, "sessions", sessionId);
+        const docRef = doc(db, "sessions", EditSession);
         const docSnap = await getDoc(docRef);
   
         if (docSnap.exists()) {
           const data = docSnap.data();
+          setClinicId(data.clinicID); // Set the clinic ID
           setSessionName(data.name);
           setSessionDate(data.date);
           setDoctorName(data.doctor);
+          setLocation(data.location);
           setPatientCount(data.patientCount.toString()); // Convert number to string for TextInput
+          setStartTime(data.startTime); // Set the start time
+          setEndTime(data.endTime); // Set the end time
         } else {
           console.log("No such document!");
         }
@@ -56,16 +64,20 @@ import {
     const onUpdateSession = async () => {
       setLoading(true);
       try {
-        const docRef = doc(db, "sessions", sessionId);
+        const docRef = doc(db, "sessions", EditSession);
         await updateDoc(docRef, {
+          clinicID: clinicId, // Update clinic ID
           name: sessionName,
           date: sessionDate,
           doctor: doctorName,
+          location: location,
           patientCount: parseInt(patientCount, 10), // Ensure to store as number
+          startTime: startTime, // Store start time
+          endTime: endTime, // Store end time
         });
   
         ToastAndroid.show("Session Updated Successfully", ToastAndroid.LONG);
-        router.push("/IT22003546/Sessions/MySessions"); // Navigate back to the sessions list
+        router.push(`/IT22003546/clinicDetails/` + clinicId); // Navigate back to the sessions list
       } catch (error) {
         console.error("Error updating document: ", error);
       } finally {
@@ -153,10 +165,52 @@ import {
                 }}
               />
               <TextInput
+                placeholder="Location"
+                value={location}
+                onChangeText={setLocation}
+                style={{
+                  padding: 10,
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  fontSize: 17,
+                  backgroundColor: "#fff",
+                  marginBottom: 20,
+                  borderColor: Colors.PRIMARY,
+                }}
+              />
+              <TextInput
                 placeholder="Patient Count"
                 value={patientCount}
                 keyboardType="numeric"
                 onChangeText={setPatientCount}
+                style={{
+                  padding: 10,
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  fontSize: 17,
+                  backgroundColor: "#fff",
+                  marginBottom: 20,
+                  borderColor: Colors.PRIMARY,
+                }}
+              />
+              <TextInput
+                placeholder="Start Time (HH:MM)"
+                value={startTime}
+                onChangeText={setStartTime}
+                style={{
+                  padding: 10,
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  fontSize: 17,
+                  backgroundColor: "#fff",
+                  marginBottom: 20,
+                  borderColor: Colors.PRIMARY,
+                }}
+              />
+              <TextInput
+                placeholder="End Time (HH:MM)"
+                value={endTime}
+                onChangeText={setEndTime}
                 style={{
                   padding: 10,
                   borderWidth: 1,
