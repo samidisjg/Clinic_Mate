@@ -14,35 +14,36 @@ import { setDoc, doc } from "firebase/firestore"; // Firestore methods
 import { Colors } from "../../../constants/Colors"; // Update the path as needed
 import MedicalRecordsAdminHeader from "../../../components/IT22350114_Compnents/MedicalRecordsAdminHeader";
 import DateTimePicker from "@react-native-community/datetimepicker"; // Import Date Picker
-import FileUploader from "../../../components/FileUploader"; // Import the FileUploader component
 
 export default function AddMedicalRecords() {
   const router = useRouter();
   const [patientEmail, setPatientEmail] = useState("");
   const [reportType, setReportType] = useState("Scan Report");
-  const [testName, setTestName] = useState("MRI Scan");
+  const [testName, setTestName] = useState("");
   const [otherTestName, setOtherTestName] = useState("");
   const [doctorName, setDoctorName] = useState("");
   const [reportDate, setReportDate] = useState(new Date());
   const [loading, setLoading] = useState(false);
-  const [fileUrl, setFileUrl] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
+
+  // Define test names for each report type
+  const testNamesOptions = {
+    "Lab Report": ["Blood Test", "Urine Test", "Liver Function Test"],
+    "Scan Report": ["CT Scan", "MRI Scan", "Ultrasound", "X-ray"],
+    "Prescription": ["Medication A", "Medication B", "Medication C"],
+  };
+
+  // Update testName options based on selected reportType
+  const getTestNamesForReportType = () => {
+    return testNamesOptions[reportType] || [];
+  };
 
   const onAddNewRecord = async () => {
     try {
       setLoading(true); // Show loading indicator
 
-      console.log("Current state values:", {
-        patientEmail,
-        reportType,
-        testName,
-        doctorName,
-        reportDate,
-        fileUrl,
-      });
-
       // Validate inputs
-      if (!patientEmail || !reportType || !testName || !doctorName || !reportDate || !fileUrl) {
+      if (!patientEmail || !reportType || !testName || !doctorName || !reportDate) {
         throw new Error("Please fill all the fields.");
       }
 
@@ -53,12 +54,10 @@ export default function AddMedicalRecords() {
         testName: testName === "Other" ? otherTestName : testName,
         doctorName,
         reportDate: reportDate.toISOString().split("T")[0], // Format the date as YYYY-MM-DD
-        fileUrl, // File URL field if the file is uploaded
       });
 
-      console.log("Document added successfully to Firestore.");
       ToastAndroid.show("Medical Record Added Successfully", ToastAndroid.LONG);
-      router.push("/IT22350114/MedicalRecords"); // Correct the navigation path
+      router.push("/IT22350114/AddMedicalRecords/MedicalRecords"); // Correct the navigation path
     } catch (error) {
       console.error("Error adding document:", error);
       ToastAndroid.show("Error adding document: " + error.message, ToastAndroid.LONG);
@@ -98,11 +97,15 @@ export default function AddMedicalRecords() {
           {/* Report Type */}
           <Text style={{ fontSize: 16, color: Colors.PRIMARY, marginTop: 15 }}>Report Type:</Text>
           <View style={{ flexDirection: "row", marginVertical: 10 }}>
-            {["Lab Report", "Scan Report", "Prescription"].map((type) => (
+            {Object.keys(testNamesOptions).map((type) => (
               <TouchableOpacity
                 key={type}
                 style={{ flexDirection: "row", alignItems: "center", marginRight: 20 }}
-                onPress={() => setReportType(type)}
+                onPress={() => {
+                  setReportType(type);
+                  setTestName(""); // Reset the test name when report type changes
+                  setOtherTestName(""); // Clear the other test name input
+                }}
               >
                 <View
                   style={{
@@ -128,7 +131,7 @@ export default function AddMedicalRecords() {
           {/* Test Name */}
           <Text style={{ fontSize: 16, color: Colors.PRIMARY, marginTop: 15 }}>Test Name:</Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", marginVertical: 10 }}>
-            {["CT Scan", "MRI Scan", "Ultrasound", "X-ray", "Other"].map((test) => (
+            {getTestNamesForReportType().map((test) => (
               <TouchableOpacity
                 key={test}
                 style={{ flexDirection: "row", alignItems: "center", marginRight: 20, marginBottom: 10 }}
@@ -153,6 +156,30 @@ export default function AddMedicalRecords() {
                 <Text>{test}</Text>
               </TouchableOpacity>
             ))}
+
+            {/* Show Other Option */}
+            <TouchableOpacity
+              style={{ flexDirection: "row", alignItems: "center", marginRight: 20, marginBottom: 10 }}
+              onPress={() => setTestName("Other")}
+            >
+              <View
+                style={{
+                  height: 20,
+                  width: 20,
+                  borderRadius: 99,
+                  borderWidth: 2,
+                  borderColor: Colors.PRIMARY,
+                  alignItems: "center",
+                  justifyContent: "center",
+                  marginRight: 8,
+                }}
+              >
+                {testName === "Other" && (
+                  <View style={{ height: 10, width: 10, backgroundColor: Colors.PRIMARY, borderRadius: 99 }} />
+                )}
+              </View>
+              <Text>Other</Text>
+            </TouchableOpacity>
           </View>
 
           {/* Show Other Input if "Other" is Selected */}
@@ -168,6 +195,7 @@ export default function AddMedicalRecords() {
           {/* Doctor Name */}
           <Text style={{ fontSize: 16, color: Colors.PRIMARY, marginTop: 15 }}>Doctor's Name:</Text>
           <TextInput
+            placeholder="Doctor's Name"
             value={doctorName}
             onChangeText={setDoctorName}
             style={{ padding: 10, borderWidth: 1, borderRadius: 10, fontSize: 17, backgroundColor: "#fff", borderColor: Colors.PRIMARY }}
@@ -192,9 +220,6 @@ export default function AddMedicalRecords() {
               }}
             />
           )}
-
-          {/* File Uploader Component */}
-          <FileUploader onFileUploadComplete={(url) => setFileUrl(url)} />
 
           {/* Submit Button */}
           <TouchableOpacity
