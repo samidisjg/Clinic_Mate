@@ -15,6 +15,8 @@ export default function MenuList() {
   const { logout, user } = useAuth();
   const router = useRouter();
 
+  console.log("Current User Email:", user?.email);
+
   const menuList = [
 
     user?.email === "tatan@gmail.com" && {
@@ -58,6 +60,12 @@ export default function MenuList() {
       name: "My Clinics",
       icon: require("./../../assets/images/View.png"),
       path: "/IT22003546/Add_Clinic/MyClinics",
+    },
+    user?.email === "thihansig@gmail.com" && {
+      id: 8,
+      name: "Upload Medical Records",
+      icon: require("./../../assets/images/medicalRecordsUpload.png"),
+      path: "/IT22350114/AddMedicalRecords/AddRecords",
     },
     {
       id: 3,
