@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   ToastAndroid,
   ScrollView,
+  Image,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { db } from "../../../configs/firebaseConfig"; // Update path as needed
@@ -14,17 +15,21 @@ import { setDoc, doc } from "firebase/firestore"; // Firestore methods
 import { Colors } from "../../../constants/Colors"; // Update the path as needed
 import MedicalRecordsAdminHeader from "../../../components/IT22350114_Compnents/MedicalRecordsAdminHeader";
 import DateTimePicker from "@react-native-community/datetimepicker"; // Import Date Picker
+import * as ImagePicker from "expo-image-picker"; // Import ImagePicker
+import { widthPercentageToDP as wp } from "react-native-responsive-screen";
+
 
 export default function AddMedicalRecords() {
   const router = useRouter();
   const [patientEmail, setPatientEmail] = useState("");
-  const [reportType, setReportType] = useState("Scan Report");
+  const [reportType, setReportType] = useState("");
   const [testName, setTestName] = useState("");
   const [otherTestName, setOtherTestName] = useState("");
   const [doctorName, setDoctorName] = useState("");
   const [reportDate, setReportDate] = useState(new Date());
   const [loading, setLoading] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [image, setImage] = useState(null); 
 
   // Define test names for each report type
   const testNamesOptions = {
@@ -36,6 +41,17 @@ export default function AddMedicalRecords() {
   // Update testName options based on selected reportType
   const getTestNamesForReportType = () => {
     return testNamesOptions[reportType] || [];
+  };
+
+  const onImagePick = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+    if (!result.canceled) {
+      setImage(result.assets[0].uri); // Set the selected image URI
+    }
   };
 
   const onAddNewRecord = async () => {
@@ -54,6 +70,7 @@ export default function AddMedicalRecords() {
         testName: testName === "Other" ? otherTestName : testName,
         doctorName,
         reportDate: reportDate.toISOString().split("T")[0], // Format the date as YYYY-MM-DD
+        imageUrl: image, // Add image URI to the document
       });
 
       ToastAndroid.show("Medical Record Added Successfully", ToastAndroid.LONG);
@@ -220,6 +237,36 @@ export default function AddMedicalRecords() {
               }}
             />
           )}
+
+          {/* Image Picker Section */}
+          <Text style={{ fontSize: 16, color: Colors.PRIMARY, marginTop: 15 }}>Upload Image:</Text>
+          <TouchableOpacity style={{ marginTop: 20 }} onPress={onImagePick}>
+            {!image ? (
+              <Image
+                source={require("./../../../assets/images/uploadFilesImg.jpg")}
+                style={{
+                  width: 250, // Use wp for responsive width
+                  height: 100,
+                  borderWidth: 2,
+                  borderRadius: 15,
+                  borderColor: Colors.PRIMARY,
+                  alignSelf: "center",
+                }}
+              />
+            ) : (
+              <Image
+                source={{ uri: image }}
+                style={{
+                  width: 320,
+                  height: 120,
+                  borderWidth: 1,
+                  borderRadius: 15,
+                  borderColor: Colors.PRIMARY,
+                  alignSelf: "center",
+                }}
+              />
+            )}
+          </TouchableOpacity>
 
           {/* Submit Button */}
           <TouchableOpacity
