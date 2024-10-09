@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   ToastAndroid,
-  Image,
   ScrollView,
 } from "react-native";
 import { useRouter } from "expo-router";
@@ -14,9 +13,8 @@ import { db } from "../../../configs/firebaseConfig"; // Update path as needed
 import { setDoc, doc } from "firebase/firestore"; // Firestore methods
 import { Colors } from "../../../constants/Colors"; // Update the path as needed
 import MedicalRecordsAdminHeader from "../../../components/IT22350114_Compnents/MedicalRecordsAdminHeader";
-import * as DocumentPicker from "expo-document-picker"; // Import Document Picker for file uploads
 import DateTimePicker from "@react-native-community/datetimepicker"; // Import Date Picker
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"; // Import Firebase Storage
+import FileUploader from "../../../components/FileUploader"; // Import the FileUploader component
 
 export default function AddMedicalRecords() {
   const router = useRouter();
@@ -27,63 +25,28 @@ export default function AddMedicalRecords() {
   const [doctorName, setDoctorName] = useState("");
   const [reportDate, setReportDate] = useState(new Date());
   const [loading, setLoading] = useState(false);
-  const [file, setFile] = useState(null);
   const [fileUrl, setFileUrl] = useState("");
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  // Function to handle file picking
-  const pickFile = async () => {
-    const result = await DocumentPicker.getDocumentAsync({
-      type: "*/*",
-      copyToCacheDirectory: true,
-    });
-
-    if (result.type === "success") {
-      setFile(result);
-      ToastAndroid.show("File Selected Successfully", ToastAndroid.LONG);
-    }
-  };
-
-  // Function to handle file upload to Firebase Storage
-  const uploadFile = async () => {
-    if (file) {
-      try {
-        const storage = getStorage();
-        const fileName = file.name;
-        const storageRef = ref(storage, `medicalRecords/${fileName}`);
-  
-        const response = await fetch(file.uri);
-        const bytes = await response.blob();
-  
-        // Log file upload process
-        console.log("Uploading file:", file.uri);
-  
-        await uploadBytes(storageRef, bytes);
-        const downloadUrl = await getDownloadURL(storageRef);
-  
-        // Log download URL after upload
-        console.log("File uploaded successfully, URL:", downloadUrl);
-  
-        setFileUrl(downloadUrl); // Set the file URL state
-        ToastAndroid.show("File Uploaded Successfully", ToastAndroid.LONG);
-      } catch (error) {
-        console.error("Error uploading file:", error);
-      }
-    }
-  };
-  
-
   const onAddNewRecord = async () => {
-    setLoading(true); // Show loading indicator
     try {
+      setLoading(true); // Show loading indicator
+
+      console.log("Current state values:", {
+        patientEmail,
+        reportType,
+        testName,
+        doctorName,
+        reportDate,
+        fileUrl,
+      });
+
       // Validate inputs
-      if (!patientEmail || !reportType || !testName || !doctorName || !reportDate) {
+      if (!patientEmail || !reportType || !testName || !doctorName || !reportDate || !fileUrl) {
         throw new Error("Please fill all the fields.");
       }
 
-      // Upload file and get URL if a file was selected
-      if (file) await uploadFile();
-
+      // Add the document to Firestore
       await setDoc(doc(db, "medicalRecords", Date.now().toString()), {
         patientEmail,
         reportType,
@@ -93,12 +56,14 @@ export default function AddMedicalRecords() {
         fileUrl, // File URL field if the file is uploaded
       });
 
+      console.log("Document added successfully to Firestore.");
       ToastAndroid.show("Medical Record Added Successfully", ToastAndroid.LONG);
-      router.push("/IT22350114/AddMedicalRecords/MedicalRecords"); // Navigate to the medical records page
+      router.push("/IT22350114/MedicalRecords"); // Correct the navigation path
     } catch (error) {
-      console.error("Error adding document: ", error);
+      console.error("Error adding document:", error);
+      ToastAndroid.show("Error adding document: " + error.message, ToastAndroid.LONG);
     } finally {
-      setLoading(false);
+      setLoading(false); // Stop loading indicator
     }
   };
 
@@ -228,21 +193,8 @@ export default function AddMedicalRecords() {
             />
           )}
 
-          {/* File Picker */}
-          <Text style={{ fontSize: 16, color: Colors.PRIMARY, marginTop: 15 }}>Upload Medical Record:</Text>
-          <TouchableOpacity
-            style={{ padding: 15, backgroundColor: Colors.PRIMARY, borderRadius: 10, marginTop: 10 }}
-            onPress={pickFile}
-          >
-            <Text style={{ color: "#fff", textAlign: "center" }}>Upload File</Text>
-          </TouchableOpacity>
-
-          {/* Display Selected File */}
-          {file && (
-            <Text style={{ fontSize: 14, color: Colors.GRAY, marginTop: 10 }}>
-              Selected File: {file.name}
-            </Text>
-          )}
+          {/* File Uploader Component */}
+          <FileUploader onFileUploadComplete={(url) => setFileUrl(url)} />
 
           {/* Submit Button */}
           <TouchableOpacity
