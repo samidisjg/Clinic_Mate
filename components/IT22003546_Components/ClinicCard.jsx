@@ -29,8 +29,8 @@ export default function ClinicCard({ item }) {
         style={{
             padding: 15,
             marginVertical: 10,
-            backgroundColor: '#ffffff', // White background for better contrast
-            borderRadius: 12, // Softer corners
+            backgroundColor: '#e0f7fa', // White background for better contrast
+            borderRadius: 24, // Softer corners
             elevation: 3, // Shadow for Android
             shadowColor: '#000', // Shadow color for iOS
             shadowOffset: { width: 0, height: 2 }, // Shadow offset for iOS

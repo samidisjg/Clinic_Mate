@@ -221,47 +221,93 @@ export default function ClinicDetailsId() {
                                 <View style={{ marginTop: 10 }}>
                                 {sessions.length > 0 ? sessions.map(session => (
                                     <View 
-                                    key={session.id} 
-                                    style={{ 
-                                        padding: 20, // Increased padding for a more spacious feel
-                                        backgroundColor: session.status === "Ongoing" ? '#c8e6c9' : '#ffffff', // Green background for ongoing sessions
-                                        borderRadius: 12, // Softer corners
-                                        marginBottom: 15,
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        elevation: 3, // Shadow for Android
-                                        shadowColor: '#000', // Shadow color for iOS
-                                        shadowOffset: { width: 0, height: 1 }, // Shadow offset for iOS
-                                        shadowOpacity: 0.2, // Shadow opacity for iOS
-                                        shadowRadius: 2, // Shadow blur radius for iOS
-                                    }}
+                                        key={session.id} 
+                                        style={{ 
+                                            padding: 15,
+                                            backgroundColor: '#e0f7fa', // Light blue background
+                                            borderRadius: 24, 
+                                            marginBottom: 15,
+                                            elevation: 3, 
+                                            shadowColor: '#000', 
+                                            shadowOffset: { width: 0, height: 1 },
+                                            shadowOpacity: 0.2,
+                                            shadowRadius: 2,
+                                            flexDirection: 'row', // Align children in a row
+                                            position: 'relative', // Added to position the status tag
+                                        }}
                                     >
-                                    <View style={{ flexDirection: 'column' }}>
-                                        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#00796b' }}>{session.date}</Text>
-                                        <Text style={{ fontSize: 16, color: '#555' }}>{`${session.startTime} - ${session.endTime}`}</Text>
-                                    </View>
-                                    <View style={{ paddingHorizontal: 10 }}>
-                                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#00796b' }}>{session.doctor}</Text>
-                                        <Text style={{ fontSize: 14, color: '#757575' }}>{`L${session.location}`}</Text> 
-                                    </View>
-                                    {user.email === 'tommy1914@gmail.com' && (
-                                        <TouchableOpacity onPress={() => deleteSession(session.id)} style={{ marginLeft: 10 }}>
-                                        <MaterialIcons name="delete" size={24} color="#FF5722" /> 
-                                        </TouchableOpacity>
-                                    )}
-                                    {user.email === 'tommy1914@gmail.com' && (
-                                        <TouchableOpacity onPress={() => updateSession(session.id)} style={{ marginLeft: 10 }}>
-                                        <FontAwesome name="edit" size={24} color="#007BFF" />
-                                        </TouchableOpacity>
-                                    )}
+                                        {/* Left Side for Date and Month */}
+                                        <View style={{ 
+                                            width: 80, // Set a fixed width for the square
+                                            height: 80, // Set the same height for the square
+                                            flexDirection: 'column', 
+                                            alignItems: 'center', // Center the items horizontally
+                                            justifyContent: 'center', // Center the items vertically
+                                            marginRight: 15, 
+                                            backgroundColor: '#fff', // White background
+                                            padding: 10,
+                                            borderRadius: 18, // Softer corners for a square
+                                            elevation: 3, 
+                                            shadowColor: '#000', 
+                                            shadowOffset: { width: 0, height: 1 },
+                                            shadowOpacity: 0.2,
+                                            shadowRadius: 2,
+                                        }}>
+                                            <Text style={{ fontSize: 42, fontWeight: 'bold', color: '#0d47a1', alignItems: 'center'}}>
+                                                {new Date(session.date).toLocaleDateString('en-US', { day: 'numeric' })}
+                                            </Text>
+                                            <Text style={{ fontSize: 18, color: '#555', paddingBottom:10, alignItems: 'center'}}>
+                                                {new Date(session.date).toLocaleString('en-US', { month: 'short' })}
+                                            </Text>
+                                        </View>
+
+                                        {/* Right Side for Session Details */}
+                                        <View style={{ 
+                                            flex: 1, 
+                                            flexDirection: 'column', 
+                                            justifyContent: 'center', // Center the contents vertically
+                                            alignItems: 'flex-start', // Align items to the start horizontally
+                                        }}>
+                                            <View>
+                                                <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#00796b' }}>{session.doctor}</Text>
+                                                <Text style={{ fontSize: 16, color: '#555' }}>{`${session.startTime} - ${session.endTime}`}</Text>
+                                                <Text style={{ fontSize: 14, color: '#757575' }}>{`L${session.location}`}</Text> 
+                                            </View>
+                                        </View>
+
+                                        {/* Status Tag */}
+                                        {session.status === "Ongoing" && (
+                                            <View style={{ 
+                                                position: 'absolute', 
+                                                top: 10, 
+                                                right: 10, 
+                                                backgroundColor: '#4CAF50', // Green color
+                                                paddingVertical: 5,
+                                                paddingHorizontal: 10,
+                                                borderRadius: 12,
+                                            }}>
+                                                <Text style={{ color: '#fff', fontWeight: 'bold' }}>Ongoing</Text>
+                                            </View>
+                                        )}
+
+                                        {/* Edit and Delete Icons */}
+                                        <View style={{ flexDirection: 'column', marginTop: 10, alignItems: 'center'}}>
+                                            {user.email === 'tommy1914@gmail.com' && (
+                                                <TouchableOpacity onPress={() => deleteSession(session.id)} style={{ marginBottom: 20, marginTop:20 }}>
+                                                    <MaterialIcons name="delete" size={24} color="#FF5722" /> 
+                                                </TouchableOpacity>
+                                            )}
+                                            {user.email === 'tommy1914@gmail.com' && (
+                                                <TouchableOpacity onPress={() => updateSession(session.id)}>
+                                                    <FontAwesome name="edit" size={24} color="#007BFF" />
+                                                </TouchableOpacity>
+                                            )}
+                                        </View>
                                     </View>
                                 )) : (
                                     <Text style={{ textAlign: "center", color: Colors.GRAY }}>No upcoming sessions available.</Text>
                                 )}
-                                </View>
-
-
+                            </View>
                             </>
                         ) : (
                             <Text>No clinic details found</Text>
