@@ -183,7 +183,7 @@ export default function AddMedicalRecords() {
             textAlign: "center",
           }}
         >
-          Add Your Mental Health Tips & Guides
+          Add Medical Records
         </Text>
         
         <View
