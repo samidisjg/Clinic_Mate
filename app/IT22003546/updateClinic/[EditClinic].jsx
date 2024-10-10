@@ -13,7 +13,9 @@ import { db } from "../../../configs/firebaseConfig"; // Adjust according to you
 import { Colors } from "../../../constants/Colors";
 import CustomKeyBoardView from "../../../components/CustomKeyBoardView";
 import { Entypo } from "@expo/vector-icons";
+import ClinicHeader from "../../../components/IT22003546_Components/ClinicHeader";
 import RNPickerSelect from "react-native-picker-select";
+
 
 const daysOfWeek = [
   { label: "Monday", value: "Monday" },
@@ -80,80 +82,120 @@ export default function EditClinic() {
   };
 
   return (
-    <CustomKeyBoardView>
-      <View style={{ marginTop: 20, paddingHorizontal: 20 }}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <TouchableOpacity onPress={() => router.push("/IT22003546/Add_Clinic/MyClinics")}>
-            <Entypo name="chevron-left" size={24} color="#737373" />
-          </TouchableOpacity>
-          <Text style={{ fontSize: 20, fontWeight: "bold", color: "#262626", marginLeft: 10 }}>
-            Edit Clinic Details
-          </Text>
-        </View>
-      </View>
-      <View style={{ padding: 20 }}>
-        {loading ? (
-          <ActivityIndicator size="large" color={Colors.PRIMARY} />
-        ) : (
-          <>
-            <TextInput
-              placeholder="Clinic Name"
-              value={name}
-              onChangeText={setName}
-              style={{
-                padding: 10,
-                borderWidth: 1,
-                borderRadius: 10,
-                fontSize: 17,
-                backgroundColor: "#fff",
-                marginBottom: 20,
-                borderColor: Colors.PRIMARY,
-              }}
-            />
-            <TextInput
-              placeholder="Hospital"
-              value={hospital}
-              onChangeText={setHospital}
-              style={{
-                padding: 10,
-                borderWidth: 1,
-                borderRadius: 10,
-                fontSize: 17,
-                backgroundColor: "#fff",
-                marginBottom: 20,
-                borderColor: Colors.PRIMARY,
-              }}
-            />
-            <TextInput
-              placeholder="Days (e.g. Monday, Tuesday)"
-              value={selectedDays}
-              onChangeText={setSelectedDays}
-              style={{
-                padding: 10,
-                borderWidth: 1,
-                borderRadius: 10,
-                fontSize: 17,
-                backgroundColor: "#fff",
-                marginBottom: 20,
-                borderColor: Colors.PRIMARY,
-              }}
-            />
-            <TouchableOpacity
-              style={{
-                backgroundColor: Colors.PRIMARY,
-                padding: 15,
-                borderRadius: 10,
-              }}
-              onPress={onUpdateClinic}
-              disabled={loading}
-            >
-              <Text style={{ textAlign: "center", color: "#fff", fontSize: 16 }}>
-                {loading ? "Updating..." : "Update Clinic"}
-              </Text>
-            </TouchableOpacity>
-          </>
-        )}
-      </View>
-    </CustomKeyBoardView>
+      <CustomKeyBoardView>
+          <ClinicHeader />
+          <View style={{ marginTop: 20, paddingHorizontal: 20 }}>
+              <View style={{ flexDirection: "row", alignItems: "center", marginBottom: 15 }}>
+                  <TouchableOpacity 
+                      onPress={() => router.push("/IT22003546/Add_Clinic/MyClinics")}
+                      style={{ 
+                          backgroundColor: "#f0f0f0", 
+                          borderRadius: 10, 
+                          padding: 5 
+                      }}
+                  >
+                      <Entypo name="chevron-left" size={24} color="#737373" />
+                  </TouchableOpacity>
+                  <Text 
+                      style={{ 
+                          fontSize: 20, 
+                          fontWeight: "bold", 
+                          color: "#262626", 
+                          marginLeft: 10 
+                      }}
+                  >
+                      Edit Clinic Details
+                  </Text>
+              </View>
+              <View style={{ 
+                  height: 2, 
+                  backgroundColor: Colors.PRIMARY, 
+                  marginBottom: 10 
+              }} />
+          </View>
+
+          <View style={{ 
+              padding: 20, 
+              backgroundColor: "#ffffff", 
+              borderRadius: 20, 
+              elevation: 3, 
+              marginHorizontal: 20,
+              marginBottom: 20 // Added marginBottom to ensure space below the tile
+          }}>
+              {loading ? (
+                  <ActivityIndicator size="large" color={Colors.PRIMARY} style={{ marginTop: 20 }} />
+              ) : (
+                  <>
+                      {/* Clinic Name Input */}
+                      <Text style={{ marginBottom: 5, fontWeight: 'bold', color: Colors.PRIMARY }}>Clinic Name</Text>
+                      <TextInput
+                          placeholder="Enter Clinic Name"
+                          value={name}
+                          onChangeText={setName}
+                          style={{
+                              padding: 10,
+                              borderWidth: 1,
+                              borderRadius: 10,
+                              fontSize: 17,
+                              backgroundColor: "#f9f9f9",
+                              marginBottom: 15,
+                              borderColor: Colors.PRIMARY,
+                          }}
+                      />
+
+                      {/* Hospital Input */}
+                      <Text style={{ marginBottom: 5, fontWeight: 'bold', color: Colors.PRIMARY }}>Hospital</Text>
+                      <TextInput
+                          placeholder="Enter Hospital Name"
+                          value={hospital}
+                          onChangeText={setHospital}
+                          style={{
+                              padding: 10,
+                              borderWidth: 1,
+                              borderRadius: 10,
+                              fontSize: 17,
+                              backgroundColor: "#f9f9f9",
+                              marginBottom: 15,
+                              borderColor: Colors.PRIMARY,
+                          }}
+                      />
+
+                      {/* Days Input */}
+                      <Text style={{ marginBottom: 5, fontWeight: 'bold', color: Colors.PRIMARY }}>Days</Text>
+                      <TextInput
+                          placeholder="e.g. Monday, Tuesday"
+                          value={selectedDays}
+                          onChangeText={setSelectedDays}
+                          style={{
+                              padding: 10,
+                              borderWidth: 1,
+                              borderRadius: 10,
+                              fontSize: 17,
+                              backgroundColor: "#f9f9f9",
+                              marginBottom: 15,
+                              borderColor: Colors.PRIMARY,
+                          }}
+                      />
+
+                      <TouchableOpacity
+                          style={{
+                              backgroundColor: Colors.PRIMARY,
+                              padding: 15,
+                              borderRadius: 10,
+                              alignItems: 'center',
+                          }}
+                          onPress={onUpdateClinic}
+                          disabled={loading}
+                      >
+                          <Text style={{ textAlign: "center", color: "#fff", fontSize: 16 }}>
+                              {loading ? "Updating..." : "Update Clinic"}
+                          </Text>
+                      </TouchableOpacity>
+                  </>
+              )}
+          </View>
+      </CustomKeyBoardView>
   );
+
+
 }

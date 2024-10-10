@@ -5,6 +5,7 @@ import {
     TouchableOpacity,
     ActivityIndicator,
     ToastAndroid,
+    ScrollView
   } from "react-native";
   import React, { useEffect, useState } from "react";
   import { useRouter, useLocalSearchParams } from "expo-router";
@@ -13,6 +14,8 @@ import {
   import { Colors } from "../../../constants/Colors";
   import CustomKeyBoardView from "../../../components/CustomKeyBoardView";
   import { Entypo } from "@expo/vector-icons";
+  import ClinicHeader from "../../../components/IT22003546_Components/ClinicHeader";
+  import RNPickerSelect from "react-native-picker-select";
   
   export default function EditSession() {
     const router = useRouter();
@@ -26,8 +29,7 @@ import {
     const [patientCount, setPatientCount] = useState(""); // New field for patient count
     const [location, setLocation] = useState(""); // New field for location
     const [loading, setLoading] = useState(false);
-  
-    console.log("Session ID:", EditSession); // Log the session ID
+    const [status, setStatus] = useState("");
   
     useEffect(() => {
       fetchSessionDetails();
@@ -50,6 +52,7 @@ import {
           setPatientCount(data.patientCount.toString()); // Convert number to string for TextInput
           setStartTime(data.startTime); // Set the start time
           setEndTime(data.endTime); // Set the end time
+          setStatus(data.status);
         } else {
           console.log("No such document!");
         }
@@ -74,6 +77,7 @@ import {
           patientCount: parseInt(patientCount, 10), // Ensure to store as number
           startTime: startTime, // Store start time
           endTime: endTime, // Store end time
+          status: status,
         });
   
         ToastAndroid.show("Session Updated Successfully", ToastAndroid.LONG);
@@ -87,163 +91,196 @@ import {
   
     return (
       <CustomKeyBoardView>
-        <View
-          style={{
-            marginTop: 20,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingHorizontal: 20,
-          }}
-        >
+        <ClinicHeader />
+        <ScrollView style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
+          
           <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <TouchableOpacity onPress={() => router.push("Profile")}>
-              <Entypo name="chevron-left" size={24} color="#737373" />
-            </TouchableOpacity>
-            <Text
               style={{
-                fontSize: 20,
-                fontWeight: "bold",
-                color: "#262626",
-                marginLeft: 10,
+                  marginTop: 20,
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  paddingHorizontal: 20,
               }}
-            >
-              Edit Session Details
-            </Text>
+          >
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  <TouchableOpacity onPress={() => router.push(`/IT22003546/clinicDetails/` + clinicId)}>
+                      <Entypo name="chevron-left" size={24} color="#737373" />
+                  </TouchableOpacity>
+                  <Text
+                      style={{
+                          fontSize: 20,
+                          fontWeight: "bold",
+                          color: "#262626",
+                          marginLeft: 10,
+                      }}
+                  >
+                      Edit Session Details
+                  </Text>
+              </View>
           </View>
-        </View>
-        <View style={{ padding: 20 }}>
-          {loading ? (
-            <ActivityIndicator size="large" color={Colors.PRIMARY} />
-          ) : (
-            <>
-              <TextInput
-                placeholder="Session Name"
-                value={sessionName}
-                onChangeText={setSessionName}
-                style={{
-                  padding: 10,
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  fontSize: 17,
-                  backgroundColor: "#fff",
-                  marginBottom: 20,
-                  borderColor: Colors.PRIMARY,
-                }}
-              />
-              <TextInput
-                placeholder="Session Date (YYYY-MM-DD)"
-                value={sessionDate}
-                onChangeText={setSessionDate}
-                style={{
-                  padding: 10,
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  fontSize: 17,
-                  backgroundColor: "#fff",
-                  marginBottom: 20,
-                  borderColor: Colors.PRIMARY,
-                }}
-              />
-              <TextInput
-                placeholder="Doctor Name"
-                value={doctorName}
-                onChangeText={setDoctorName}
-                style={{
-                  padding: 10,
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  fontSize: 17,
-                  backgroundColor: "#fff",
-                  marginBottom: 20,
-                  borderColor: Colors.PRIMARY,
-                }}
-              />
-              <TextInput
-                placeholder="Location"
-                value={location}
-                onChangeText={setLocation}
-                style={{
-                  padding: 10,
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  fontSize: 17,
-                  backgroundColor: "#fff",
-                  marginBottom: 20,
-                  borderColor: Colors.PRIMARY,
-                }}
-              />
-              <TextInput
-                placeholder="Patient Count"
-                value={patientCount}
-                keyboardType="numeric"
-                onChangeText={setPatientCount}
-                style={{
-                  padding: 10,
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  fontSize: 17,
-                  backgroundColor: "#fff",
-                  marginBottom: 20,
-                  borderColor: Colors.PRIMARY,
-                }}
-              />
-              <TextInput
-                placeholder="Start Time (HH:MM)"
-                value={startTime}
-                onChangeText={setStartTime}
-                style={{
-                  padding: 10,
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  fontSize: 17,
-                  backgroundColor: "#fff",
-                  marginBottom: 20,
-                  borderColor: Colors.PRIMARY,
-                }}
-              />
-              <TextInput
-                placeholder="End Time (HH:MM)"
-                value={endTime}
-                onChangeText={setEndTime}
-                style={{
-                  padding: 10,
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  fontSize: 17,
-                  backgroundColor: "#fff",
-                  marginBottom: 20,
-                  borderColor: Colors.PRIMARY,
-                }}
-              />
-              <TouchableOpacity
-                style={{
-                  backgroundColor: Colors.PRIMARY,
-                  padding: 15,
-                  borderRadius: 10,
-                }}
-                onPress={onUpdateSession}
-                disabled={loading}
-              >
-                <Text
-                  style={{
-                    textAlign: "center",
-                    color: "#fff",
-                    fontSize: 16,
-                  }}
-                >
-                  {loading ? "Updating..." : "Update Session"}
-                </Text>
-              </TouchableOpacity>
-            </>
-          )}
-        </View>
+          <View style={{ padding: 20 }}>
+              {loading ? (
+                  <ActivityIndicator size="large" color={Colors.PRIMARY} />
+              ) : (
+                  <>
+                      <Text style={{ marginBottom: 5, fontWeight: 'bold', color: Colors.PRIMARY }}>Session Name</Text>
+                      <TextInput
+                          placeholder="Enter session name"
+                          value={sessionName}
+                          onChangeText={setSessionName}
+                          style={{
+                              padding: 10,
+                              borderWidth: 1,
+                              borderRadius: 10,
+                              fontSize: 17,
+                              backgroundColor: "#fff",
+                              marginBottom: 20,
+                              borderColor: Colors.PRIMARY,
+                          }}
+                      />
+  
+                      <Text style={{ marginBottom: 5, fontWeight: 'bold', color: Colors.PRIMARY }}>Session Date (YYYY-MM-DD)</Text>
+                      <TextInput
+                          placeholder="Enter session date"
+                          value={sessionDate}
+                          onChangeText={setSessionDate}
+                          style={{
+                              padding: 10,
+                              borderWidth: 1,
+                              borderRadius: 10,
+                              fontSize: 17,
+                              backgroundColor: "#fff",
+                              marginBottom: 20,
+                              borderColor: Colors.PRIMARY,
+                          }}
+                      />
+  
+                      <Text style={{ marginBottom: 5, fontWeight: 'bold', color: Colors.PRIMARY }}>Doctor Name</Text>
+                      <TextInput
+                          placeholder="Enter doctor name"
+                          value={doctorName}
+                          onChangeText={setDoctorName}
+                          style={{
+                              padding: 10,
+                              borderWidth: 1,
+                              borderRadius: 10,
+                              fontSize: 17,
+                              backgroundColor: "#fff",
+                              marginBottom: 20,
+                              borderColor: Colors.PRIMARY,
+                          }}
+                      />
+  
+                      <Text style={{ marginBottom: 5, fontWeight: 'bold', color: Colors.PRIMARY }}>Location</Text>
+                      <TextInput
+                          placeholder="Enter location"
+                          value={location}
+                          onChangeText={setLocation}
+                          style={{
+                              padding: 10,
+                              borderWidth: 1,
+                              borderRadius: 10,
+                              fontSize: 17,
+                              backgroundColor: "#fff",
+                              marginBottom: 20,
+                              borderColor: Colors.PRIMARY,
+                          }}
+                      />
+  
+                      <Text style={{ marginBottom: 5, fontWeight: 'bold', color: Colors.PRIMARY }}>Patient Count</Text>
+                      <TextInput
+                          placeholder="Enter patient count"
+                          value={patientCount}
+                          keyboardType="numeric"
+                          onChangeText={setPatientCount}
+                          style={{
+                              padding: 10,
+                              borderWidth: 1,
+                              borderRadius: 10,
+                              fontSize: 17,
+                              backgroundColor: "#fff",
+                              marginBottom: 20,
+                              borderColor: Colors.PRIMARY,
+                          }}
+                      />
+  
+                      <Text style={{ marginBottom: 5, fontWeight: 'bold', color: Colors.PRIMARY }}>Start Time (HH:MM)</Text>
+                      <TextInput
+                          placeholder="Enter start time"
+                          value={startTime}
+                          onChangeText={setStartTime}
+                          style={{
+                              padding: 10,
+                              borderWidth: 1,
+                              borderRadius: 10,
+                              fontSize: 17,
+                              backgroundColor: "#fff",
+                              marginBottom: 20,
+                              borderColor: Colors.PRIMARY,
+                          }}
+                      />
+  
+                      <Text style={{ marginBottom: 5, fontWeight: 'bold', color: Colors.PRIMARY }}>End Time (HH:MM)</Text>
+                      <TextInput
+                          placeholder="Enter end time"
+                          value={endTime}
+                          onChangeText={setEndTime}
+                          style={{
+                              padding: 10,
+                              borderWidth: 1,
+                              borderRadius: 10,
+                              fontSize: 17,
+                              backgroundColor: "#fff",
+                              marginBottom: 20,
+                              borderColor: Colors.PRIMARY,
+                          }}
+                      />
+                      <RNPickerSelect
+                            onValueChange={(value) => setStatus(value)}
+                            items={[
+                                { label: "Upcoming", value: "Upcoming" },
+                                { label: "Ongoing", value: "Ongoing" },
+                            ]}
+                            placeholder={{ label: "Select Status", value: null }}
+                            value={status}
+                            style={{
+                                inputIOS: {
+                                    padding: 15,
+                                    borderWidth: 1,
+                                    borderRadius: 10,
+                                    fontSize: 17,
+                                    backgroundColor: "#f9f9f9",
+                                    borderColor: Colors.PRIMARY,
+                                }
+                            }}
+                        />
+  
+                      <TouchableOpacity
+                          style={{
+                              backgroundColor: Colors.PRIMARY,
+                              padding: 15,
+                              borderRadius: 10,
+                          }}
+                          onPress={onUpdateSession}
+                          disabled={loading}
+                      >
+                          <Text
+                              style={{
+                                  textAlign: "center",
+                                  color: "#fff",
+                                  fontSize: 16,
+                              }}
+                          >
+                              {loading ? "Updating..." : "Update Session"}
+                          </Text>
+                      </TouchableOpacity>
+                  </>
+              )}
+          </View>
+          </ScrollView>
       </CustomKeyBoardView>
-    );
+  );
+  
   }
   

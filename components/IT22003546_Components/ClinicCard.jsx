@@ -26,44 +26,47 @@ export default function ClinicCard({ item }) {
 
   return (
     <TouchableOpacity
-      style={{
-        padding: 15,
-        marginVertical: 10,
-        backgroundColor: '#e0f7fa', // Light blue background
-        borderRadius: 10,
-        elevation: 2, // Adds shadow effect on Android
-        flexDirection: 'column',
-      }}
-      onPress={() => router.push(`/IT22003546/clinicDetails/` + item.id)} // Navigate to clinic details
+        style={{
+            padding: 15,
+            marginVertical: 10,
+            backgroundColor: '#ffffff', // White background for better contrast
+            borderRadius: 12, // Softer corners
+            elevation: 3, // Shadow for Android
+            shadowColor: '#000', // Shadow color for iOS
+            shadowOffset: { width: 0, height: 2 }, // Shadow offset for iOS
+            shadowOpacity: 0.2, // Shadow opacity for iOS
+            shadowRadius: 4, // Shadow blur radius for iOS
+            flexDirection: 'row', 
+            justifyContent: 'space-between', 
+            alignItems: 'center', 
+        }}
+        onPress={() => router.push(`/IT22003546/clinicDetails/` + item.id)} 
     >
-      <Text style={{ fontSize: 18, fontWeight: 'bold', color: Colors.PRIMARY }}>
-        {item?.name}
-      </Text>
-      <Text style={{ fontSize: 14, color: Colors.GRAY, marginTop: 5 }}>
-        {item?.hospital} {/* Display hospital name instead of type */}
-      </Text>
-      <Text style={{ fontSize: 14, color: Colors.GRAY }}>
-        Days: {item?.days.join(', ')} {/* Display clinic days */}
-      </Text>
-      <View style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginTop: 10,
-      }}>
-        <View style={{ flexDirection: 'row' }}>
-          {user?.email === 'tommy1914@gmail.com' && (
-            <TouchableOpacity onPress={() => router.push(`/IT22003546/updateClinic/` + item.id)}>
-              <MaterialIcons name="edit" size={24} color={Colors.PRIMARY} />
-            </TouchableOpacity>
-          )}
-          {user?.email === 'tommy1914@gmail.com' && (
-            <TouchableOpacity onPress={onDelete}>
-              <MaterialIcons name="delete" size={24} color={Colors.PRIMARY} />
-            </TouchableOpacity>
-          )}
+        <View style={{ flex: 1 }}> 
+            <Text style={{ fontSize: 20, fontWeight: 'bold', color: Colors.PRIMARY }}>
+                {item?.name}
+            </Text>
+            <Text style={{ fontSize: 16, color: Colors.GRAY, marginTop: 5 }}>
+                {item?.hospital} 
+            </Text>
+            <Text style={{ fontSize: 16, color: Colors.GRAY }}>
+                Days: {item?.days.join(', ')} 
+            </Text>
         </View>
+        <View style={{ flexDirection: 'column', alignItems: 'flex-end' }}> 
+          {user?.email === 'tommy1914@gmail.com' && (
+              <TouchableOpacity onPress={() => router.push(`/IT22003546/updateClinic/` + item.id)}>
+                  <MaterialIcons name="edit" size={24} color={Colors.PRIMARY} style={{ marginBottom: 30 }} /> 
+              </TouchableOpacity>
+          )}
+          {user?.email === 'tommy1914@gmail.com' && (
+              <TouchableOpacity onPress={onDelete}>
+                  <MaterialIcons name="delete" size={24} color="#FF5722" />
+              </TouchableOpacity>
+          )}
       </View>
     </TouchableOpacity>
-  );
+);
+
+
 }
