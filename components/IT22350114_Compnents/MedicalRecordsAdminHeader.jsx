@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     paddingBottom: hp("2%"), // Responsive bottom padding (2% of screen height)
     borderBottomLeftRadius: 20, // Rounded corners on the bottom left
     borderBottomRightRadius: 20, // Rounded corners on the bottom right
-    backgroundColor: "#ffffff", // Background color (if needed)
+    //backgroundColor: Colors.PRIMARY, // Background color (if needed)
     position: "relative", // Add relative positioning to adjust absolute children
   },
   title: {

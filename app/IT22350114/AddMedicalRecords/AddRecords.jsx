@@ -114,7 +114,7 @@ export default function AddMedicalRecords() {
         userImage: user?.profileUrl,
       });
       setLoading(false);
-      router.push("/IT22350114/AddMedicalRecords/MedicalRecords"); // Correct the navigation path
+      router.push("/IT22350114/AddMedicalRecords/MedicalRecordsDetail"); // Correct the navigation path
       ToastAndroid.show(
         "New Medical Record Added Successfully",
         ToastAndroid.LONG

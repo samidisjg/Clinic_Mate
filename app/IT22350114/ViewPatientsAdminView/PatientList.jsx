@@ -45,7 +45,7 @@ export default function PatientList() {
             name={patient.username} 
             onPress={() => {
               console.log(`Navigating to AdminRecordCategory for patient: ${patient.username}`);
-              router.push('/IT22350114/ViewPatientsAdminView/AdminRecordCategory'); 
+              router.push('/IT22350114/AddMedicalRecords/MedicalRecordsDetail'); 
           }}          
           />
         ))
