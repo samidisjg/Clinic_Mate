@@ -35,6 +35,16 @@ export default function TabLayout() {
           ),
         }}
       />
+          
+      <Tabs.Screen
+        name="MedicalRecordsCategory"
+        options={{
+          tabBarLabel: "Medical Records",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="document-text" size={24} color={color} />
+          ),
+        }}
+      />
       <Tabs.Screen
         name="Chats"
         options={{
