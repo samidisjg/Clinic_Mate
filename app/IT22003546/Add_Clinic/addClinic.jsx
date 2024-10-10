@@ -53,72 +53,103 @@ export default function Add_Clinic() {
   };
 
   return (
-    <CustomKeyBoardView>
-      <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
-        <ClinicHeader />
+      <CustomKeyBoardView>
+        <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
+          <ClinicHeader />
 
-        <View
-          style={{
-            marginTop: hp(1),
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingHorizontal: wp(5),
-          }}
-        >
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
-            <TouchableOpacity onPress={() => router.push("/IT22003546/Add_Clinic/MyClinics")}>
-              <Entypo name="chevron-left" size={hp(4)} color="#737373" />
-            </TouchableOpacity>
-            <Text style={{ fontSize: hp(2), fontWeight: "medium", color: "#262626", fontFamily: "outfit-medium" }}>
-              Add Clinic
-            </Text>
-          </View>
-        </View>
-
-        <View style={{ height: 8, borderBottomWidth: 1, borderBottomColor: "#d4d4d4" }} />
-        
-        <View style={{ padding: 20 }}>
-          <Text style={{ fontSize: hp(2.5), fontWeight: "medium", color: Colors.PRIMARY, fontFamily: "outfit-medium", textAlign: "center" }}>
-            Add Your Clinic
-          </Text>
-          
-          <View style={{ marginTop: 30, gap: 10, padding: 20, backgroundColor: "#ccccff", borderRadius: 20 }}>
-            <TextInput
-              placeholder="Clinic Name"
-              value={clinicName}
-              onChangeText={setClinicName}
-              style={{ padding: 10, borderWidth: 1, borderRadius: 10, fontSize: 17, backgroundColor: "#fff", borderColor: Colors.PRIMARY }}
-            />
-            <TextInput
-              placeholder="Hospital Name"
-              value={hospitalName}
-              onChangeText={setHospitalName} // Added input for hospital name
-              style={{ padding: 10, borderWidth: 1, borderRadius: 10, fontSize: 17, backgroundColor: "#fff", borderColor: Colors.PRIMARY }}
-            />
-            <TextInput
-              placeholder="Days (e.g. Monday, Tuesday)"
-              value={clinicDays}
-              onChangeText={setClinicDays}
-              style={{ padding: 10, borderWidth: 1, borderRadius: 10, fontSize: 17, backgroundColor: "#fff", borderColor: Colors.PRIMARY }}
-            />
-          </View>
-
-          <TouchableOpacity
-            disabled={loading}
-            style={{ backgroundColor: Colors.PRIMARY, padding: 15, borderRadius: 10, marginTop: 20 }}
-            onPress={onAddNewClinic}
+          <View
+            style={{
+              marginTop: hp(1),
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              paddingHorizontal: wp(5),
+            }}
           >
-            {loading ? (
-              <ActivityIndicator size={"large"} color={"#fff"} />
-            ) : (
-              <Text style={{ textAlign: "center", color: "#fff", fontFamily: "outfit-medium" }}>
+            <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+              <TouchableOpacity onPress={() => router.push("/IT22003546/Add_Clinic/MyClinics")}>
+                <Entypo name="chevron-left" size={hp(4)} color="#737373" />
+              </TouchableOpacity>
+              <Text style={{ fontSize: hp(2), fontWeight: "600", color: "#262626", fontFamily: "outfit-medium" }}>
                 Add Clinic
               </Text>
-            )}
-          </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={{ height: 8, borderBottomWidth: 1, borderBottomColor: "#d4d4d4" }} />
+          
+          <View style={{ padding: 20 }}>
+            <Text style={{ fontSize: hp(2.5), fontWeight: "600", color: Colors.PRIMARY, fontFamily: "outfit-medium", textAlign: "center", marginBottom: 20 }}>
+              Add Your Clinic
+            </Text>
+            
+            <View style={{ marginTop: 10, padding: 20, backgroundColor: "#ffffff", borderRadius: 20, elevation: 2 }}>
+              <TextInput
+                placeholder="Clinic Name"
+                value={clinicName}
+                onChangeText={setClinicName}
+                style={{ 
+                  padding: 10, 
+                  borderWidth: 1, 
+                  borderRadius: 10, 
+                  fontSize: 17, 
+                  backgroundColor: "#fff", 
+                  borderColor: Colors.PRIMARY,
+                  marginBottom: 15,
+                }}
+              />
+              <TextInput
+                placeholder="Hospital Name"
+                value={hospitalName}
+                onChangeText={setHospitalName}
+                style={{ 
+                  padding: 10, 
+                  borderWidth: 1, 
+                  borderRadius: 10, 
+                  fontSize: 17, 
+                  backgroundColor: "#fff", 
+                  borderColor: Colors.PRIMARY,
+                  marginBottom: 15,
+                }}
+              />
+              <TextInput
+                placeholder="Days (e.g. Monday, Tuesday)"
+                value={clinicDays}
+                onChangeText={setClinicDays}
+                style={{ 
+                  padding: 10, 
+                  borderWidth: 1, 
+                  borderRadius: 10, 
+                  fontSize: 17, 
+                  backgroundColor: "#fff", 
+                  borderColor: Colors.PRIMARY,
+                  marginBottom: 15,
+                }}
+              />
+            </View>
+
+            <TouchableOpacity
+              disabled={loading}
+              style={{ 
+                backgroundColor: Colors.PRIMARY, 
+                padding: 15, 
+                borderRadius: 10, 
+                marginTop: 20,
+                alignItems: 'center', // Center the text horizontally
+              }}
+              onPress={onAddNewClinic}
+            >
+              {loading ? (
+                <ActivityIndicator size={"large"} color={"#fff"} />
+              ) : (
+                <Text style={{ textAlign: "center", color: "#fff", fontSize: 16, fontFamily: "outfit-medium" }}>
+                  Add Clinic
+                </Text>
+              )}
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
-    </CustomKeyBoardView>
-  );
+      </CustomKeyBoardView>
+    );
+
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -19,39 +19,64 @@ export default function EnrollForClinic() {
   const [clinicType, setClinicType] = useState("Any Clinic");
   const [loading, setLoading] = useState(false);
   const [clinics, setClinics] = useState([]);
+  const [hospitalOptions, setHospitalOptions] = useState([]);
+  const [clinicTypeOptions, setClinicTypeOptions] = useState([]);
 
-  const hospitalOptions = [
-    { label: "General Hospital - Colombo", value: "General Hospital - Colombo" },
-    // Add more hospitals as needed
-  ];
+  // Fetch hospitals and clinic types from the database
+  useEffect(() => {
+    const fetchHospitalAndClinicTypes = async () => {
+      try {
+        const clinicsRef = collection(db, "clinics");
+        const clinicsSnapshot = await getDocs(clinicsRef);
+        const hospitalSet = new Set();
+        const clinicTypeSet = new Set();
 
-  const clinicTypeOptions = [
-    { label: "Heart Clinic", value: "Heart Clinic" },
-    { label: "General Clinic", value: "General Clinic" },
-    { label: "Specialized Clinic", value: "Specialized Clinic" },
-    // Add more clinic types as needed
-  ];
+        clinicsSnapshot.docs.forEach((doc) => {
+          const data = doc.data();
+          if (data.hospital) hospitalSet.add(data.hospital);
+          if (data.name) clinicTypeSet.add(data.name); // Assuming `type` is the clinic type field
+        });
+
+        setHospitalOptions(Array.from(hospitalSet).map(hospital => ({ label: hospital, value: hospital })));
+        setClinicTypeOptions(Array.from(clinicTypeSet).map(name => ({ label: name, value: name })));
+      } catch (error) {
+        console.error("Error fetching hospitals and clinic types: ", error);
+      }
+    };
+
+    fetchHospitalAndClinicTypes();
+  }, []);
 
   const searchClinics = async () => {
     setLoading(true);
     try {
-      // Fetch clinics based on the selected hospital and clinic type
-      const clinicsRef = collection(db, "clinics"); // Adjust to your collection name
+      const clinicsRef = collection(db, "clinics");
       const clinicsSnapshot = await getDocs(clinicsRef);
-      const filteredClinics = clinicsSnapshot.docs
-        .map((doc) => ({ id: doc.id, ...doc.data() }))
-        .filter(
-          (clinic) =>
-            (hospital === "Any Hospital" || clinic.hospital === hospital) &&
-            (clinicType === "Any Clinic" || clinic.name === clinicType)
-        );
-      setClinics(filteredClinics);
+      const allClinics = clinicsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  
+      // Determine filtering criteria
+      const filteredClinics = allClinics.filter((clinic) => {
+        // If both fields are set to default values, return all clinics
+        if (hospital === "Any Hospital" && clinicType === "Any Clinic") {
+          return true; // Show all clinics
+        }
+  
+        // If hospital is selected, match by hospital
+        const hospitalMatch = (hospital === "Any Hospital" || clinic.hospital === hospital);
+        // If clinic type is selected, match by clinic type
+        const clinicTypeMatch = (clinicType === "Any Clinic" || clinic.name === clinicType);
+  
+        return hospitalMatch && clinicTypeMatch; // Both criteria must be satisfied
+      });
+  
+      setClinics(filteredClinics); // Update state with filtered clinics
     } catch (error) {
       console.error("Error fetching clinics: ", error);
     } finally {
       setLoading(false);
     }
   };
+  
 
   const handleClinicPress = (clinicId) => {
     router.push(`/IT22003546/clinicDetails/` + clinicId);
@@ -71,13 +96,28 @@ export default function EnrollForClinic() {
           onValueChange={(value) => setHospital(value)}
           items={hospitalOptions}
           placeholder={{ label: "Any Hospital:", value: null }}
-          style={{ inputIOS: { padding: 10, borderWidth: 1, borderRadius: 10, borderColor: Colors.PRIMARY } }}
+          style={{
+            inputIOS: {
+              padding: 10,
+              borderWidth: 1,
+              borderRadius: 10,
+              borderColor: Colors.PRIMARY,
+              marginBottom: 20,
+            }
+          }}
         />
         <RNPickerSelect
           onValueChange={(value) => setClinicType(value)}
           items={clinicTypeOptions}
           placeholder={{ label: "Any Clinic:", value: null }}
-          style={{ inputIOS: { padding: 10, borderWidth: 1, borderRadius: 10, borderColor: Colors.PRIMARY } }}
+          style={{
+            inputIOS: {
+              padding: 10,
+              borderWidth: 1,
+              borderRadius: 10,
+              borderColor: Colors.PRIMARY,
+            }
+          }}
         />
 
         <TouchableOpacity
@@ -100,18 +140,27 @@ export default function EnrollForClinic() {
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => (
               <TouchableOpacity
-                style={{ padding: 10, margin: 10, backgroundColor: "#f0f0f0", borderRadius: 10 }}
-                onPress={() => handleClinicPress(item.id)} // Call the press handler
+                style={{
+                  padding: 15,
+                  margin: 10,
+                  backgroundColor: "#ffffff",
+                  borderRadius: 15,
+                  elevation: 3,
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.2,
+                  shadowRadius: 5,
+                }}
+                onPress={() => handleClinicPress(item.id)} 
               >
-                <Text style={{ fontSize: 18, fontWeight: "bold" }}>{item.name}</Text>
-                <Text style={{ fontSize: 14, color: Colors.GRAY }}>Type: {item.type}</Text>
+                <Text style={{ fontSize: 20, fontWeight: "bold", color: Colors.PRIMARY }}>{item.name}</Text>
                 <Text style={{ fontSize: 14, color: Colors.GRAY }}>Hospital: {item.hospital}</Text>
-                <Text style={{ fontSize: 14, color: Colors.GRAY }}>Days: {item.days}</Text>
+                <Text style={{ fontSize: 14, color: Colors.GRAY }}>Days: {item.days.join(', ')}</Text>
               </TouchableOpacity>
             )}
             contentContainerStyle={{ paddingBottom: 20 }}
             ListEmptyComponent={
-              <Text style={{ textAlign: "center", color: Colors.GRAY }}>No clinics available.</Text>
+              <Text style={{ textAlign: "center", color: Colors.GRAY, marginTop: 30 }}>No clinics available.</Text>
             }
           />
         )}

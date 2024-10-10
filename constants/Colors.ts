@@ -29,5 +29,5 @@ export const Colors = {
   BLACK: '#000000',
   SKYBLUE: '#000000',
   LIGHTBLUE: '#DFF9FF',
-  
+  GREEN: '#06402B',
 };
