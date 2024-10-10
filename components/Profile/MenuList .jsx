@@ -63,9 +63,9 @@ export default function MenuList() {
     },
     user?.email === "thihansig@gmail.com" && {
       id: 8,
-      name: "Upload Medical Records",
+      name: "Medical Records",
       icon: require("./../../assets/images/medicalRecordsUpload.png"),
-      path: "/IT22350114/AddMedicalRecords/AddRecords",
+      path: "/IT22350114/ViewPatientsAdminView/PatientList",
     },
     {
       id: 3,
