@@ -37,7 +37,7 @@ export default function TabLayout() {
       />
           
       <Tabs.Screen
-        name="MedicalRecords"
+        name="MedicalRecordsCategory"
         options={{
           tabBarLabel: "Medical Records",
           tabBarIcon: ({ color }) => (
