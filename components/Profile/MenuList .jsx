@@ -53,7 +53,12 @@ export default function MenuList() {
       icon: require("./../../assets/images/View.png"),
       path: "/IT22577160/mentalHealth/My_MentalHealth",
     },
-
+    user?.email === "tommy1914@gmail.com" && {
+      id: 2,
+      name: "My Clinics",
+      icon: require("./../../assets/images/View.png"),
+      path: "/IT22003546/Add_Clinic/MyClinics",
+    },
     {
       id: 3,
       name: "Share App",
