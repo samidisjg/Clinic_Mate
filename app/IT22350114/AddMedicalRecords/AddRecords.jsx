@@ -1,38 +1,58 @@
-import React, { useState } from "react";
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
-  ActivityIndicator,
-  ToastAndroid,
-  ScrollView,
   Image,
+  TextInput,
+  ToastAndroid,
+  ActivityIndicator,
 } from "react-native";
-import { useRouter } from "expo-router";
-import { db } from "../../../configs/firebaseConfig"; // Update path as needed
-import { setDoc, doc } from "firebase/firestore"; // Firestore methods
-import { Colors } from "../../../constants/Colors"; // Update the path as needed
-import MedicalRecordsAdminHeader from "../../../components/IT22350114_Compnents/MedicalRecordsAdminHeader";
+import React, { useEffect, useState } from "react";
+import { router, useNavigation } from "expo-router";
+import { Colors } from "../../../constants/Colors";
+import { Entypo, Ionicons } from "@expo/vector-icons";
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+import * as ImagePicker from "expo-image-picker";
+import RNPickerSelect from "react-native-picker-select";
+import { collection, doc, getDocs, query, setDoc } from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { db, storage } from "../../../configs/firebaseConfig";
+import { useAuth } from "../../../context/AuthContextProvider";
+import CustomKeyBoardView from "../../../components/CustomKeyBoardView";
+
 import DateTimePicker from "@react-native-community/datetimepicker"; // Import Date Picker
-import * as ImagePicker from "expo-image-picker"; // Import ImagePicker
-import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 
 
 export default function AddMedicalRecords() {
-  const router = useRouter();
+  const navigation = useNavigation();
+  const [image, setImage] = useState(null);
+
   const [patientEmail, setPatientEmail] = useState("");
   const [reportType, setReportType] = useState("");
   const [testName, setTestName] = useState("");
   const [otherTestName, setOtherTestName] = useState("");
   const [doctorName, setDoctorName] = useState("");
   const [reportDate, setReportDate] = useState(new Date());
-  const [loading, setLoading] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [image, setImage] = useState(null); 
 
-  // Define test names for each report type
-  const testNamesOptions = {
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: "Add Medical Records",
+      headerShown: true,
+      headerStyle: {
+        backgroundColor: Colors.PRIMARY,
+      },
+    });
+  }, []);
+
+   // Define test names for each report type
+   const testNamesOptions = {
     "Lab Report": ["Blood Test", "Urine Test", "Liver Function Test"],
     "Scan Report": ["CT Scan", "MRI Scan", "Ultrasound", "X-ray"],
     "Prescription": ["Medication A", "Medication B", "Medication C"],
@@ -49,61 +69,132 @@ export default function AddMedicalRecords() {
       allowsEditing: true,
       quality: 1,
     });
-    if (!result.canceled) {
-      setImage(result.assets[0].uri); // Set the selected image URI
+    setImage(result?.assets[0]?.uri);
+    console.log(result);
+  };
+
+  const onAddNewRecords = async () => {
+    try {
+      const fileName = Date.now().toString() + ".jpg";
+      const response = await fetch(image);
+      const blob = await response.blob();
+      const storageRef = ref(storage, "medicalRecords/" + fileName);
+      await uploadBytes(storageRef, blob)
+        .then((snapshot) => {
+          console.log("File Uploaded...");
+        })
+        .then((resp) => {
+          getDownloadURL(storageRef).then(async (downloadUrl) => {
+            console.log(downloadUrl);
+            saveMedicalRecords(downloadUrl);
+          });
+        });
+      setLoading(false);
+    } catch (error) {
+      console.error("Error uploading image:", error);
     }
   };
 
-  const onAddNewRecord = async () => {
+  const saveMedicalRecords = async (imageUrl) => {
     try {
-      setLoading(true); // Show loading indicator
-
-      // Validate inputs
-      if (!patientEmail || !reportType || !testName || !doctorName || !reportDate) {
-        throw new Error("Please fill all the fields.");
+      setLoading(true);
+      if (!image) {
+        throw new Error("Please select an image.");
       }
 
-      // Add the document to Firestore
       await setDoc(doc(db, "medicalRecords", Date.now().toString()), {
-        patientEmail,
-        reportType,
+        patientEmail: patientEmail,
+        reportType: reportType,
         testName: testName === "Other" ? otherTestName : testName,
-        doctorName,
+        doctorName: doctorName,
         reportDate: reportDate.toISOString().split("T")[0], // Format the date as YYYY-MM-DD
-        imageUrl: image, // Add image URI to the document
+        imageUrl: imageUrl,
+        username: user?.username,
+        userEmail: user?.email,
+        userImage: user?.profileUrl,
       });
-
-      ToastAndroid.show("Medical Record Added Successfully", ToastAndroid.LONG);
+      setLoading(false);
       router.push("/IT22350114/AddMedicalRecords/MedicalRecords"); // Correct the navigation path
+      ToastAndroid.show(
+        "New Medical Record Added Successfully",
+        ToastAndroid.LONG
+      );
     } catch (error) {
-      console.error("Error adding document:", error);
-      ToastAndroid.show("Error adding document: " + error.message, ToastAndroid.LONG);
-    } finally {
-      setLoading(false); // Stop loading indicator
+      console.error("Error adding document: ", error);
     }
   };
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
-      {/* Custom header for the page */}
-      <MedicalRecordsAdminHeader />
-
+    <CustomKeyBoardView>
+      <View
+        style={{
+          marginTop: hp(4),
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          paddingHorizontal: wp(5),
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 5,
+          }}
+        >
+          <TouchableOpacity onPress={() => router.push("Profile")}>
+            <Entypo name="chevron-left" size={hp(4)} color="#737373" />
+          </TouchableOpacity>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 5,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: hp(2),
+                fontWeight: "medium",
+                color: "#262626",
+                fontFamily: "outfit-medium",
+              }}
+            >
+              Add Medical Records
+            </Text>
+          </View>
+        </View>
+      </View>
+      
+      <View
+        style={{
+          height: 8,
+          borderBottomWidth: 1,
+          borderBottomColor: "#d4d4d4",
+        }}
+      />
       <View style={{ padding: 20 }}>
         <Text
           style={{
-            fontSize: 22,
+            fontSize: hp(2.5),
             fontWeight: "medium",
             color: Colors.PRIMARY,
             fontFamily: "outfit-medium",
             textAlign: "center",
           }}
         >
-          Report Upload
+          Add Your Mental Health Tips & Guides
         </Text>
-
-        {/* Container for Form Inputs */}
-        <View style={{ marginTop: 20, backgroundColor: "#e0e7ff", borderRadius: 20, padding: 20 }}>
-          {/* Patient Email */}
+        
+        <View
+          style={{
+            marginTop: 30,
+            gap: 10,
+            padding: 20,
+            backgroundColor: "#ccccff",
+            borderRadius: 20,
+          }}
+        >
           <Text style={{ fontSize: 16, color: Colors.PRIMARY }}>Patient Email:</Text>
           <TextInput
             value={patientEmail}
@@ -144,6 +235,7 @@ export default function AddMedicalRecords() {
               </TouchableOpacity>
             ))}
           </View>
+
 
           {/* Test Name */}
           <Text style={{ fontSize: 16, color: Colors.PRIMARY, marginTop: 15 }}>Test Name:</Text>
@@ -236,52 +328,60 @@ export default function AddMedicalRecords() {
                 if (selectedDate) setReportDate(selectedDate);
               }}
             />
-          )}
-
-          {/* Image Picker Section */}
-          <Text style={{ fontSize: 16, color: Colors.PRIMARY, marginTop: 15 }}>Upload Image:</Text>
-          <TouchableOpacity style={{ marginTop: 20 }} onPress={onImagePick}>
-            {!image ? (
-              <Image
-                source={require("./../../../assets/images/uploadFilesImg.jpg")}
-                style={{
-                  width: 250, // Use wp for responsive width
-                  height: 100,
-                  borderWidth: 2,
-                  borderRadius: 15,
-                  borderColor: Colors.PRIMARY,
-                  alignSelf: "center",
-                }}
-              />
-            ) : (
-              <Image
-                source={{ uri: image }}
-                style={{
-                  width: 320,
-                  height: 120,
-                  borderWidth: 1,
-                  borderRadius: 15,
-                  borderColor: Colors.PRIMARY,
-                  alignSelf: "center",
-                }}
-              />
-            )}
-          </TouchableOpacity>
-
-          {/* Submit Button */}
-          <TouchableOpacity
-            disabled={loading}
-            style={{ backgroundColor: Colors.PRIMARY, padding: 15, borderRadius: 10, marginTop: 20 }}
-            onPress={onAddNewRecord}
-          >
-            {loading ? (
-              <ActivityIndicator size={"large"} color={"#fff"} />
-            ) : (
-              <Text style={{ textAlign: "center", color: "#fff", fontFamily: "outfit-medium" }}>Submit</Text>
-            )}
-          </TouchableOpacity>
+          )}        
         </View>
+
+        <TouchableOpacity style={{ marginTop: 20 }} onPress={onImagePick}>
+          {!image ? (
+            <Image
+              source={require("./../../../assets/images/uploadFilesImg.jpg")}
+              style={{
+                width: 320,
+                height: 130,
+                borderWidth: 1,
+                borderRadius: 15,
+                borderColor: Colors.PRIMARY,
+              }}
+            />
+          ) : (
+            <Image
+              source={{ uri: image }}
+              style={{
+                width: 220,
+                height: 220,
+                borderWidth: 1,
+                borderRadius: 15,
+                borderColor: Colors.PRIMARY
+              }}
+            />
+          )}
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          disabled={loading}
+          style={{
+            backgroundColor: Colors.PRIMARY,
+            padding: 15,
+            borderRadius: 10,
+            marginTop: 20,
+          }}
+          onPress={onAddNewRecords}
+        >
+          {loading ? (
+            <ActivityIndicator size={"large"} color={"#fff"} />
+          ) : (
+            <Text
+              style={{
+                textAlign: "center",
+                color: "#fff",
+                fontFamily: "outfit-medium",
+              }}
+            >
+              Add New Medcial Record
+            </Text>
+          )}
+        </TouchableOpacity>
       </View>
-    </ScrollView>
+    </CustomKeyBoardView>
   );
 }
