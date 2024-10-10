@@ -15,7 +15,7 @@ export default function MedicalRecordsDetail() {
         const recordsRef = collection(db, 'medicalRecords');
         const querySnapshot = await getDocs(recordsRef);
         const recordsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        console.log(recordsData); // Log the fetched records
+        console.log(recordsData); 
         setRecords(recordsData);
       } catch (error) {
         console.error('Error fetching records:', error);
@@ -29,7 +29,7 @@ export default function MedicalRecordsDetail() {
 
   const handleRecordPress = (fileUrl) => {
     console.log("File URL: ", fileUrl);
-    if (fileUrl && fileUrl.startsWith('http')) { // Check if the URL starts with 'http'
+    if (fileUrl && fileUrl.startsWith('http')) { 
       Linking.openURL(fileUrl)
         .catch(err => {
           console.error("Error opening file:", err);
