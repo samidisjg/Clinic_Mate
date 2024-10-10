@@ -120,6 +120,7 @@ import {
                   <>
                       <TextInput
                           placeholder="Session Name"
+                          placeholderTextColor="#A9A9A9"
                           onChangeText={setSessionName}
                           style={{
                               padding: 15,
@@ -134,6 +135,7 @@ import {
                       <View>
                             <TextInput
                                 placeholder="Session Date (YYYY-MM-DD)"
+                                placeholderTextColor="#A9A9A9"
                                 value={sessionDate}
                                 onFocus={() => setShowDatePicker(true)} // Show date picker when focused
                                 style={{
@@ -161,6 +163,7 @@ import {
                         </View>
                       <TextInput
                           placeholder="Doctor Name"
+                          placeholderTextColor="#A9A9A9"
                           onChangeText={setDoctorName}
                           style={{
                               padding: 15,
@@ -174,6 +177,7 @@ import {
                       />
                       <TextInput
                           placeholder="Location"
+                          placeholderTextColor="#A9A9A9"
                           onChangeText={setLocation}
                           style={{
                               padding: 15,
@@ -187,6 +191,7 @@ import {
                       />
                       <TextInput
                           placeholder="Patient Count"
+                          placeholderTextColor="#A9A9A9"
                           keyboardType="numeric"
                           onChangeText={setPatientCount}
                           style={{
@@ -201,6 +206,7 @@ import {
                       />
                       <TextInput
                           placeholder="Start Time (HH:MM)"
+                          placeholderTextColor="#A9A9A9"
                           onChangeText={setStartTime}
                           style={{
                               padding: 15,
@@ -214,6 +220,7 @@ import {
                       />
                       <TextInput
                           placeholder="End Time (HH:MM)"
+                          placeholderTextColor="#A9A9A9"
                           onChangeText={setEndTime}
                           style={{
                               padding: 15,
@@ -232,11 +239,13 @@ import {
                                 { label: "Ongoing", value: "Ongoing" },
                             ]}
                             placeholder={{ label: "Select Status", value: null }}
+                           
                             style={{
                                 inputIOS: {
                                     padding: 15,
                                     borderWidth: 1,
                                     borderRadius: 10,
+                                    marginBottom: 20,   
                                     fontSize: 17,
                                     backgroundColor: "#f9f9f9",
                                     borderColor: Colors.PRIMARY,

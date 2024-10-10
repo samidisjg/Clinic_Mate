@@ -73,7 +73,7 @@ export default function My_Clinics() {
               gap: 5,
             }}
           >
-            <View style={{ padding: 10, backgroundColor: '#fff', flexDirection: 'row', justifyContent: 'space-between' }}>
+            <View style={{ padding: 0, backgroundColor: '#fff', flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text
               style={{
                 fontSize: hp(2),
@@ -85,7 +85,7 @@ export default function My_Clinics() {
               My Clinics
             </Text>
             <TouchableOpacity onPress={() => router.push('/IT22003546/Add_Clinic/addClinic')}>
-              <Text style={{ color: '#007BFF' , marginLeft: 180}}>Add Clinic</Text>
+              <Text style={{ color: '#007BFF' , marginLeft: 170}}>Add Clinic</Text>
             </TouchableOpacity>
           </View>
             

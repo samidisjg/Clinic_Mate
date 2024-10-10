@@ -96,6 +96,7 @@ export default function EnrollForClinic() {
           onValueChange={(value) => setHospital(value)}
           items={hospitalOptions}
           placeholder={{ label: "Any Hospital:", value: null }}
+          
           style={{
             inputIOS: {
               padding: 10,

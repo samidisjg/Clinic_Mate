@@ -24,7 +24,7 @@ export default function OngoingSessionCard({ session }) {
         justifyContent: 'space-between', // Space between left and right items
         width: 'auto', // Allow the width to adapt instead of fixed 100%
         maxWidth: '100%', // Ensure it doesn't exceed the parent's width
-        overflow: 'hidden', // Prevent content from spilling out
+        // overflow: 'hidden', // Prevent content from spilling out
       }}
     >
       {/* Left Side for Current Number */}
