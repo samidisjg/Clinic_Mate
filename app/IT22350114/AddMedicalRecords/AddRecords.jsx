@@ -236,7 +236,6 @@ export default function AddMedicalRecords() {
             ))}
           </View>
 
-
           {/* Test Name */}
           <Text style={{ fontSize: 16, color: Colors.PRIMARY, marginTop: 15 }}>Test Name:</Text>
           <View style={{ flexDirection: "row", flexWrap: "wrap", marginVertical: 10 }}>
