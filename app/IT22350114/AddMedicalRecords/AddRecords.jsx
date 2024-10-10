@@ -53,8 +53,8 @@ export default function AddMedicalRecords() {
 
    // Define test names for each report type
    const testNamesOptions = {
-    "LabReport": ["Blood Test", "Urine Test", "Liver Function Test"],
-    "ScanReport": ["CT Scan", "MRI Scan", "Ultrasound", "X-ray"],
+    "Lab_Report": ["Blood Test", "Urine Test", "Liver Function Test"],
+    "Scan_Report": ["CT Scan", "MRI Scan", "Ultrasound", "X-ray"],
     "Prescription": ["Medication A", "Medication B", "Medication C"],
   };
 

@@ -56,7 +56,7 @@ export default function MedicalRecordsCategory() {
         categories.map((category, index) => (
           <MedicalRecordCategoryCard
             key={index} // Use index as key for simplicity, but consider using a unique id if available
-            title={category}
+            title={category.split('_').join(' ')} // Replace underscore with space
             imageSource={require("../../assets/images/uploadFilesImg.jpg")} // Placeholder for image
             onPress={() => handleCategoryPress(category)} // Pass category
           />
