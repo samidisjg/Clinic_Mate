@@ -77,12 +77,12 @@ export default function MenuList() {
     user?.email === "thihansig@gmail.com" && {
       id: 8,
       name: "Medical Records",
-      icon: require("./../../assets/images/medicalRecordsUpload.png"),
+      icon: require("./../../assets/images/list.png"),
       path: "/IT22350114/ViewPatientsAdminView/PatientList",
     }, 
     user?.email === "thihansig@gmail.com" && {
       id: 8,
-      name: "Medical Records",
+      name: "Add Medical Records",
       icon: require("./../../assets/images/medicalRecordsUpload.png"),
       path: "/IT22350114/AddMedicalRecords/AddRecords",
     },
