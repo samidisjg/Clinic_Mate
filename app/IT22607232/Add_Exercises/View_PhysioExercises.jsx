@@ -22,7 +22,7 @@ export default function View_PhysioExercises() {
   }, [user]);
 
   /**
-   * Used get mental health tips by user email
+   * Used get physio exercises  by user email
    */
   const GetExerciseList = async () => {
     setLoading(true);

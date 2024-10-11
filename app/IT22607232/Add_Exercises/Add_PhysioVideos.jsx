@@ -79,7 +79,7 @@ import {
         if (!video) throw new Error("Please select a video.");
   
         setLoading(true);
-        await setDoc(doc(db, "physioExercises", Date.now().toString()), {
+        await setDoc(doc(db, "PhysioVideos", Date.now().toString()), {
           title,
           category,
           content,

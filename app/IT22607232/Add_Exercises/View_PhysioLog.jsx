@@ -22,13 +22,13 @@ export default function View_PhysioExercises() {
   }, [user]);
 
   /**
-   * Used get mental health tips by user email
+   *  get physio exercises by user email
    */
   const GetExerciseList = async () => {
     setLoading(true);
     setExerciseList([]);
     const q = query(
-      collection(db, "physioExercises"),
+      collection(db, "PhysioVideos"),
       where("userEmail", "==", user?.email)
     );
     const snapshot = await getDocs(q);

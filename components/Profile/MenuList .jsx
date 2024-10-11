@@ -17,6 +17,20 @@ export default function MenuList() {
 
   const menuList = [
 
+   
+    user?.email === "messi@gmail.com" && {
+      id: 1,
+      name: "Add Mental Health Tips & Guides",
+      icon: require("./../../assets/images/add.png"),
+      path: "/IT22577160/mentalHealth/Add_MentalHealth",
+    },
+    user?.email === "messi@gmail.com" && {
+      id: 2,
+      name: "View Mental Health Tips & Guides",
+      icon: require("./../../assets/images/View.png"),
+      path: "/IT22577160/mentalHealth/My_MentalHealth",
+    },
+
     user?.email === "tatan@gmail.com" && {
       id: 5,
       name: "Add Physio Exercises",
@@ -38,22 +52,8 @@ export default function MenuList() {
       id: 1,
       name: "Physio Videos",
       icon: require("./../../assets/images/seeVideo.png"),
-      path: "/IT22607232/Add_Exercises/View_PhysioExercises",
+      path: "/IT22607232/Add_Exercises/View_PhysioLog",
     },
-
-    user?.email === "messi@gmail.com" && {
-      id: 1,
-      name: "Add Mental Health Tips & Guides",
-      icon: require("./../../assets/images/add.png"),
-      path: "/IT22577160/mentalHealth/Add_MentalHealth",
-    },
-    user?.email === "messi@gmail.com" && {
-      id: 2,
-      name: "View Mental Health Tips & Guides",
-      icon: require("./../../assets/images/add.png"),
-      path: "/IT22577160/mentalHealth/My_MentalHealth",
-    },
-
     {
       id: 3,
       name: "Share App",
