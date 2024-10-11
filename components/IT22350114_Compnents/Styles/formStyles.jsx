@@ -9,20 +9,21 @@ const formStyles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
+    backgroundColor: '#ffffff', // Optional: set a background color
   },
   backButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 5,
+    marginRight: 10, // Space between the button and the title
   },
   headerText: {
-    fontSize: 16,
-    fontWeight: 'medium',
-    color: '#262626',
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: Colors.PRIMARY, // Set the color to match your design
     fontFamily: 'outfit-medium',
+    marginLeft: 10, // Add margin to separate the text from the arrow
   },
   separator: {
     height: 8,

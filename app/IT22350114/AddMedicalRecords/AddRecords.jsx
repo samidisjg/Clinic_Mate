@@ -22,7 +22,8 @@ import formStyles from "../../../components/IT22350114_Compnents/Styles/formStyl
 import { Entypo } from "@expo/vector-icons";
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen"; // Ensure this line is included
 import { Colors } from "../../../constants/Colors";
-
+import MedicalRecordsAdminHeader from "../../../components/IT22350114_Compnents/MedicalRecordsAdminHeader";
+import Profile from "../../(tabs)/Profile";
 export default function AddMedicalRecords() {
   const navigation = useNavigation();
   const [image, setImage] = useState(null);
@@ -118,7 +119,7 @@ export default function AddMedicalRecords() {
         userImage: user?.profileUrl,
       });
       setLoading(false);
-      router.push("/IT22350114/AddMedicalRecords/MedicalRecordsDetail");
+      router.push("../../(tabs)/Profile");
       ToastAndroid.show(
         "New Medical Record Added Successfully",
         ToastAndroid.LONG
@@ -129,17 +130,20 @@ export default function AddMedicalRecords() {
   };
 
   return (
-    <CustomKeyBoardView>
+    <View style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
+      <MedicalRecordsAdminHeader />
       <View style={formStyles.header}>
         <TouchableOpacity onPress={() => router.push("Profile")}>
         <Entypo name="chevron-left" size={hp(4)} color="#737373" />
         </TouchableOpacity>
-        <Text style={formStyles.headerText}>Add Medical Records</Text>
+        <Text style={formStyles.title}>Add Medical Records</Text>
       </View>
+    <CustomKeyBoardView>
+      
 
       <View style={formStyles.separator} />
       <View style={formStyles.container}>
-        <Text style={formStyles.title}>Add Medical Records</Text>
+        {/* <Text style={formStyles.title}>Add Medical Records</Text> */}
 
         <View style={formStyles.inputContainer}>
           <Text style={formStyles.label}>Select Patient Username:</Text>
@@ -277,5 +281,6 @@ export default function AddMedicalRecords() {
         </TouchableOpacity>
       </View>
     </CustomKeyBoardView>
+    </View>
   );
 }
