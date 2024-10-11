@@ -54,9 +54,9 @@ export default function PatientList() {
     });
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#f5f5f5', padding: 20 }}>
+    <View style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
       <MedicalRecordsAdminHeader />
-
+    <ScrollView style={{ flex: 1, backgroundColor: '#f5f5f5', padding: 20 }}>
       <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>
         Patients with Records
       </Text>
@@ -88,5 +88,6 @@ export default function PatientList() {
         )
       )}
     </ScrollView>
+    </View>
   );
 }

@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
 import { Colors } from "../../../constants/Colors"; 
 import MedicalRecordsDetialsCard from '../../../components/IT22350114_Compnents/MedicalRecordsDetialsCard';
 import { db } from '../../../configs/firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
 import { useRouter } from 'expo-router'; 
 import { useLocalSearchParams } from 'expo-router'
+import MedicalRecordsAdminHeader from '../../../components/IT22350114_Compnents/MedicalRecordsAdminHeader';
+import { Entypo } from '@expo/vector-icons'; // Importing an icon library
+
 
 export default function MedicalRecordsDetail() {
   const { MedicalRecordsDetail } = useLocalSearchParams()
@@ -38,6 +41,8 @@ export default function MedicalRecordsDetail() {
   }, [MedicalRecordsDetail]);
 
   return (
+    <View style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
+      <MedicalRecordsAdminHeader />
     <ScrollView style={{ flex: 1, backgroundColor: '#f5f5f5', padding: 20 }}>
       <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>
         {MedicalRecordsDetail} Records
@@ -59,5 +64,6 @@ export default function MedicalRecordsDetail() {
         )
       )}
     </ScrollView>
+    </View>
   );
 }

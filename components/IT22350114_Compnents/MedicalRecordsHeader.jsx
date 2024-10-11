@@ -11,7 +11,7 @@ import { useRouter } from "expo-router";
 
 const android = Platform.OS === "android";
 
-export default function MedicalRecordsAdminHeader() {
+export default function MedicalRecordsHeader() {
   const { user } = useAuth();
   const { top } = useSafeAreaInsets();
   const router = useRouter();
