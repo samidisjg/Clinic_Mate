@@ -30,4 +30,5 @@ export const Colors = {
   SKYBLUE: '#000000',
   LIGHTBLUE: '#DFF9FF',
   GREEN: '#06402B',
+  WHITE: '#FFFFFF',
 };

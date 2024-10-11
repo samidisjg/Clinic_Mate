@@ -1,44 +1,76 @@
-import React, { useState } from "react";
+// AddRecords.jsx
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
-  ActivityIndicator,
-  ToastAndroid,
-  ScrollView,
   Image,
+  TextInput,
+  ToastAndroid,
+  ActivityIndicator,
 } from "react-native";
-import { useRouter } from "expo-router";
-import { db } from "../../../configs/firebaseConfig"; // Update path as needed
-import { setDoc, doc } from "firebase/firestore"; // Firestore methods
-import { Colors } from "../../../constants/Colors"; // Update the path as needed
-import MedicalRecordsAdminHeader from "../../../components/IT22350114_Compnents/MedicalRecordsAdminHeader";
-import DateTimePicker from "@react-native-community/datetimepicker"; // Import Date Picker
-import * as ImagePicker from "expo-image-picker"; // Import ImagePicker
-import { widthPercentageToDP as wp } from "react-native-responsive-screen";
-
+import React, { useEffect, useState } from "react";
+import { router, useNavigation } from "expo-router";
+import * as ImagePicker from "expo-image-picker";
+import RNPickerSelect from "react-native-picker-select"; 
+import { collection, doc, getDocs, setDoc } from "firebase/firestore";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import { db, storage } from "../../../configs/firebaseConfig";
+import { useAuth } from "../../../context/AuthContextProvider";
+import CustomKeyBoardView from "../../../components/CustomKeyBoardView";
+import DateTimePicker from "@react-native-community/datetimepicker"; 
+import formStyles from "../../../components/IT22350114_Compnents/Styles/formStyles";
+import { Entypo } from "@expo/vector-icons";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen"; // Ensure this line is included
+import { Colors } from "../../../constants/Colors";
 
 export default function AddMedicalRecords() {
-  const router = useRouter();
+  const navigation = useNavigation();
+  const [image, setImage] = useState(null);
   const [patientEmail, setPatientEmail] = useState("");
+  const [patientUsername, setPatientUsername] = useState("");
+  const [usernames, setUsernames] = useState([]);
   const [reportType, setReportType] = useState("");
   const [testName, setTestName] = useState("");
   const [otherTestName, setOtherTestName] = useState("");
   const [doctorName, setDoctorName] = useState("");
   const [reportDate, setReportDate] = useState(new Date());
-  const [loading, setLoading] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [image, setImage] = useState(null); 
+  const [loading, setLoading] = useState(false);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: "Add Medical Records",
+      headerShown: true,
+      headerStyle: {
+        backgroundColor: Colors.PRIMARY,
+      },
+    });
+  }, []);
+
+  // Fetch usernames from Firestore
+  useEffect(() => {
+    const fetchUsernames = async () => {
+      try {
+        const usersRef = collection(db, 'users');
+        const querySnapshot = await getDocs(usersRef);
+        const usernamesData = querySnapshot.docs.map(doc => doc.data().username);
+        setUsernames(usernamesData);
+      } catch (error) {
+        console.error('Error fetching usernames:', error);
+      }
+    };
+
+    fetchUsernames();
+  }, []);
 
   // Define test names for each report type
   const testNamesOptions = {
-    "Lab Report": ["Blood Test", "Urine Test", "Liver Function Test"],
-    "Scan Report": ["CT Scan", "MRI Scan", "Ultrasound", "X-ray"],
+    "Lab_Report": ["Blood Test", "Urine Test", "Liver Function Test"],
+    "Scan_Report": ["CT Scan", "MRI Scan", "Ultrasound", "X-ray"],
     "Prescription": ["Medication A", "Medication B", "Medication C"],
   };
 
-  // Update testName options based on selected reportType
   const getTestNamesForReportType = () => {
     return testNamesOptions[reportType] || [];
   };
@@ -49,180 +81,151 @@ export default function AddMedicalRecords() {
       allowsEditing: true,
       quality: 1,
     });
-    if (!result.canceled) {
-      setImage(result.assets[0].uri); // Set the selected image URI
+    setImage(result?.assets[0]?.uri);
+  };
+
+  const onAddNewRecords = async () => {
+    try {
+      const fileName = Date.now().toString() + ".jpg";
+      const response = await fetch(image);
+      const blob = await response.blob();
+      const storageRef = ref(storage, "medicalRecords/" + fileName);
+      await uploadBytes(storageRef, blob);
+      const downloadUrl = await getDownloadURL(storageRef);
+      saveMedicalRecords(downloadUrl);
+    } catch (error) {
+      console.error("Error uploading image:", error);
     }
   };
 
-  const onAddNewRecord = async () => {
+  const saveMedicalRecords = async (imageUrl) => {
     try {
-      setLoading(true); // Show loading indicator
-
-      // Validate inputs
-      if (!patientEmail || !reportType || !testName || !doctorName || !reportDate) {
-        throw new Error("Please fill all the fields.");
+      setLoading(true);
+      if (!image) {
+        throw new Error("Please select an image.");
       }
 
-      // Add the document to Firestore
       await setDoc(doc(db, "medicalRecords", Date.now().toString()), {
         patientEmail,
+        patientUsername,
         reportType,
         testName: testName === "Other" ? otherTestName : testName,
         doctorName,
-        reportDate: reportDate.toISOString().split("T")[0], // Format the date as YYYY-MM-DD
-        imageUrl: image, // Add image URI to the document
+        reportDate: reportDate.toISOString().split("T")[0],
+        imageUrl,
+        username: user?.username,
+        userEmail: user?.email,
+        userImage: user?.profileUrl,
       });
-
-      ToastAndroid.show("Medical Record Added Successfully", ToastAndroid.LONG);
-      router.push("/IT22350114/AddMedicalRecords/MedicalRecords"); // Correct the navigation path
+      setLoading(false);
+      router.push("/IT22350114/AddMedicalRecords/MedicalRecordsDetail");
+      ToastAndroid.show(
+        "New Medical Record Added Successfully",
+        ToastAndroid.LONG
+      );
     } catch (error) {
-      console.error("Error adding document:", error);
-      ToastAndroid.show("Error adding document: " + error.message, ToastAndroid.LONG);
-    } finally {
-      setLoading(false); // Stop loading indicator
+      console.error("Error adding document: ", error);
     }
   };
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
-      {/* Custom header for the page */}
-      <MedicalRecordsAdminHeader />
+    <CustomKeyBoardView>
+      <View style={formStyles.header}>
+        <TouchableOpacity onPress={() => router.push("Profile")}>
+        <Entypo name="chevron-left" size={hp(4)} color="#737373" />
+        </TouchableOpacity>
+        <Text style={formStyles.headerText}>Add Medical Records</Text>
+      </View>
 
-      <View style={{ padding: 20 }}>
-        <Text
-          style={{
-            fontSize: 22,
-            fontWeight: "medium",
-            color: Colors.PRIMARY,
-            fontFamily: "outfit-medium",
-            textAlign: "center",
-          }}
-        >
-          Report Upload
-        </Text>
+      <View style={formStyles.separator} />
+      <View style={formStyles.container}>
+        <Text style={formStyles.title}>Add Medical Records</Text>
 
-        {/* Container for Form Inputs */}
-        <View style={{ marginTop: 20, backgroundColor: "#e0e7ff", borderRadius: 20, padding: 20 }}>
-          {/* Patient Email */}
-          <Text style={{ fontSize: 16, color: Colors.PRIMARY }}>Patient Email:</Text>
+        <View style={formStyles.inputContainer}>
+          <Text style={formStyles.label}>Select Patient Username:</Text>
+          <RNPickerSelect
+            onValueChange={(value) => setPatientUsername(value)}
+            items={usernames.map((username) => ({ label: username, value: username }))}
+            style={{
+              inputIOS: formStyles.input,
+              inputAndroid: formStyles.input,
+            }}
+          />
+
+          <Text style={formStyles.label}>Patient Email:</Text>
           <TextInput
             value={patientEmail}
             onChangeText={setPatientEmail}
-            style={{ padding: 10, borderWidth: 1, borderRadius: 10, fontSize: 17, backgroundColor: "#fff", borderColor: Colors.PRIMARY }}
+            style={formStyles.input}
           />
 
-          {/* Report Type */}
-          <Text style={{ fontSize: 16, color: Colors.PRIMARY, marginTop: 15 }}>Report Type:</Text>
-          <View style={{ flexDirection: "row", marginVertical: 10 }}>
+          <Text style={formStyles.label}>Report Type:</Text>
+          <View style={formStyles.radioGroup}>
             {Object.keys(testNamesOptions).map((type) => (
               <TouchableOpacity
                 key={type}
-                style={{ flexDirection: "row", alignItems: "center", marginRight: 20 }}
+                style={formStyles.radioButton}
                 onPress={() => {
                   setReportType(type);
-                  setTestName(""); // Reset the test name when report type changes
+                  setTestName(""); // Reset test name
                   setOtherTestName(""); // Clear the other test name input
                 }}
               >
-                <View
-                  style={{
-                    height: 20,
-                    width: 20,
-                    borderRadius: 99,
-                    borderWidth: 2,
-                    borderColor: Colors.PRIMARY,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginRight: 8,
-                  }}
-                >
-                  {reportType === type && (
-                    <View style={{ height: 10, width: 10, backgroundColor: Colors.PRIMARY, borderRadius: 99 }} />
-                  )}
+                <View style={formStyles.radioButtonCircle}>
+                  {reportType === type && <View style={formStyles.radioButtonSelected} />}
                 </View>
                 <Text>{type}</Text>
               </TouchableOpacity>
             ))}
           </View>
 
-          {/* Test Name */}
-          <Text style={{ fontSize: 16, color: Colors.PRIMARY, marginTop: 15 }}>Test Name:</Text>
-          <View style={{ flexDirection: "row", flexWrap: "wrap", marginVertical: 10 }}>
+          <Text style={formStyles.label}>Test Name:</Text>
+          <View style={formStyles.radioGroup}>
             {getTestNamesForReportType().map((test) => (
               <TouchableOpacity
                 key={test}
-                style={{ flexDirection: "row", alignItems: "center", marginRight: 20, marginBottom: 10 }}
+                style={formStyles.radioButton}
                 onPress={() => setTestName(test)}
               >
-                <View
-                  style={{
-                    height: 20,
-                    width: 20,
-                    borderRadius: 99,
-                    borderWidth: 2,
-                    borderColor: Colors.PRIMARY,
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginRight: 8,
-                  }}
-                >
-                  {testName === test && (
-                    <View style={{ height: 10, width: 10, backgroundColor: Colors.PRIMARY, borderRadius: 99 }} />
-                  )}
+                <View style={formStyles.radioButtonCircle}>
+                  {testName === test && <View style={formStyles.radioButtonSelected} />}
                 </View>
                 <Text>{test}</Text>
               </TouchableOpacity>
             ))}
 
-            {/* Show Other Option */}
             <TouchableOpacity
-              style={{ flexDirection: "row", alignItems: "center", marginRight: 20, marginBottom: 10 }}
+              style={formStyles.radioButton}
               onPress={() => setTestName("Other")}
             >
-              <View
-                style={{
-                  height: 20,
-                  width: 20,
-                  borderRadius: 99,
-                  borderWidth: 2,
-                  borderColor: Colors.PRIMARY,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginRight: 8,
-                }}
-              >
-                {testName === "Other" && (
-                  <View style={{ height: 10, width: 10, backgroundColor: Colors.PRIMARY, borderRadius: 99 }} />
-                )}
+              <View style={formStyles.radioButtonCircle}>
+                {testName === "Other" && <View style={formStyles.radioButtonSelected} />}
               </View>
               <Text>Other</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Show Other Input if "Other" is Selected */}
           {testName === "Other" && (
             <TextInput
               placeholder="Enter Test Name"
               value={otherTestName}
               onChangeText={setOtherTestName}
-              style={{ padding: 10, borderWidth: 1, borderRadius: 10, fontSize: 17, backgroundColor: "#fff", borderColor: Colors.PRIMARY }}
+              style={formStyles.input}
             />
           )}
 
-          {/* Doctor Name */}
-          <Text style={{ fontSize: 16, color: Colors.PRIMARY, marginTop: 15 }}>Doctor's Name:</Text>
+          <Text style={formStyles.label}>Doctor's Name:</Text>
           <TextInput
             placeholder="Doctor's Name"
             value={doctorName}
             onChangeText={setDoctorName}
-            style={{ padding: 10, borderWidth: 1, borderRadius: 10, fontSize: 17, backgroundColor: "#fff", borderColor: Colors.PRIMARY }}
+            style={formStyles.input}
           />
 
-          {/* Report Date */}
-          <Text style={{ fontSize: 16, color: Colors.PRIMARY, marginTop: 15 }}>Report Date:</Text>
+          <Text style={formStyles.label}>Report Date:</Text>
           <TouchableOpacity
             onPress={() => setShowDatePicker(true)}
-            style={{ padding: 10, borderWidth: 1, borderRadius: 10, backgroundColor: "#fff", borderColor: Colors.PRIMARY }}
+            style={formStyles.input}
           >
             <Text>{reportDate.toDateString()}</Text>
           </TouchableOpacity>
@@ -237,51 +240,42 @@ export default function AddMedicalRecords() {
               }}
             />
           )}
-
-          {/* Image Picker Section */}
-          <Text style={{ fontSize: 16, color: Colors.PRIMARY, marginTop: 15 }}>Upload Image:</Text>
-          <TouchableOpacity style={{ marginTop: 20 }} onPress={onImagePick}>
-            {!image ? (
-              <Image
-                source={require("./../../../assets/images/uploadFilesImg.jpg")}
-                style={{
-                  width: 250, // Use wp for responsive width
-                  height: 100,
-                  borderWidth: 2,
-                  borderRadius: 15,
-                  borderColor: Colors.PRIMARY,
-                  alignSelf: "center",
-                }}
-              />
-            ) : (
-              <Image
-                source={{ uri: image }}
-                style={{
-                  width: 320,
-                  height: 120,
-                  borderWidth: 1,
-                  borderRadius: 15,
-                  borderColor: Colors.PRIMARY,
-                  alignSelf: "center",
-                }}
-              />
-            )}
-          </TouchableOpacity>
-
-          {/* Submit Button */}
-          <TouchableOpacity
-            disabled={loading}
-            style={{ backgroundColor: Colors.PRIMARY, padding: 15, borderRadius: 10, marginTop: 20 }}
-            onPress={onAddNewRecord}
-          >
-            {loading ? (
-              <ActivityIndicator size={"large"} color={"#fff"} />
-            ) : (
-              <Text style={{ textAlign: "center", color: "#fff", fontFamily: "outfit-medium" }}>Submit</Text>
-            )}
-          </TouchableOpacity>
         </View>
+
+        <TouchableOpacity style={{ marginTop: 20 }} onPress={onImagePick}>
+          {!image ? (
+            <Image
+              source={require("./../../../assets/images/uploadFilesImg.jpg")}
+              style={formStyles.uploadImage}
+            />
+          ) : (
+            <Image
+              source={{ uri: image }}
+              style={formStyles.imagePreview}
+            />
+          )}
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          disabled={loading}
+          style={formStyles.button}
+          onPress={onAddNewRecords}
+        >
+          {loading ? (
+            <ActivityIndicator size={"large"} color={"#fff"} />
+          ) : (
+            <Text
+              style={{
+                textAlign: "center",
+                color: "#fff",
+                fontFamily: "outfit-medium",
+              }}
+            >
+              Add New Medical Record
+            </Text>
+          )}
+        </TouchableOpacity>
       </View>
-    </ScrollView>
+    </CustomKeyBoardView>
   );
 }

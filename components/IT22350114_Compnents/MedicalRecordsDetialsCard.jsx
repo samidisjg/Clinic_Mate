@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { Colors } from "../../constants/Colors";
-import pdfIcon from "../../assets/images/pdfIcon.png"; // Adjusted path
+import pdfIcon from "../../assets/images/pdfIcon.png"; 
 
 
 const MedicalRecordsDetialsCard = ({ title, date, onPress }) => {
@@ -9,7 +9,7 @@ const MedicalRecordsDetialsCard = ({ title, date, onPress }) => {
     <TouchableOpacity onPress={onPress} style={styles.card}>
       <View style={styles.cardContent}>
         <Image
-          source={pdfIcon} // Use imported image
+          source={pdfIcon} 
           style={styles.icon}
         />
         <View style={styles.textContainer}>
