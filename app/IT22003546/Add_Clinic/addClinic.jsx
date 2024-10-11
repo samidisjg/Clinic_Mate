@@ -86,6 +86,7 @@ export default function Add_Clinic() {
             <View style={{ marginTop: 10, padding: 20, backgroundColor: "#ffffff", borderRadius: 20, elevation: 2 }}>
               <TextInput
                 placeholder="Clinic Name"
+                placeholderTextColor="#A9A9A9"
                 value={clinicName}
                 onChangeText={setClinicName}
                 style={{ 
@@ -100,6 +101,7 @@ export default function Add_Clinic() {
               />
               <TextInput
                 placeholder="Hospital Name"
+                placeholderTextColor="#A9A9A9"
                 value={hospitalName}
                 onChangeText={setHospitalName}
                 style={{ 
@@ -114,6 +116,7 @@ export default function Add_Clinic() {
               />
               <TextInput
                 placeholder="Days (e.g. Monday, Tuesday)"
+                placeholderTextColor="#A9A9A9"
                 value={clinicDays}
                 onChangeText={setClinicDays}
                 style={{ 
