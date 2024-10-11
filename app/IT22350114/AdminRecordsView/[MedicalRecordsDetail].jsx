@@ -23,7 +23,7 @@ export default function MedicalRecordsDetail() {
         const recordsData = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         console.log(recordsData); // Log the fetched records
         // Filter records based on the selected category
-        const filteredRecords = recordsData.filter(record => record.username === MedicalRecordsDetail); // Adjust based on your data structure
+        const filteredRecords = recordsData.filter(record => record.patientUsername === MedicalRecordsDetail); // Adjust based on your data structure
         //console.log(filteredRecords); // Log the fetched records
         setRecords(filteredRecords);
       } catch (error) {
