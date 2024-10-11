@@ -15,6 +15,8 @@ export default function MenuList() {
   const { logout, user } = useAuth();
   const router = useRouter();
 
+  console.log("Current User Email:", user?.email);
+
   const menuList = [
 
    
@@ -53,6 +55,30 @@ export default function MenuList() {
       name: "Physio Videos",
       icon: require("./../../assets/images/seeVideo.png"),
       path: "/IT22607232/Add_Exercises/View_PhysioLog",
+    },
+    user?.email === "messi@gmail.com" && {
+      id: 1,
+      name: "Add Mental Health Tips & Guides",
+      icon: require("./../../assets/images/add.png"),
+      path: "/IT22577160/mentalHealth/Add_MentalHealth",
+    },
+    user?.email === "messi@gmail.com" && {
+      id: 2,
+      name: "View Mental Health Tips & Guides",
+      icon: require("./../../assets/images/View.png"),
+      path: "/IT22577160/mentalHealth/My_MentalHealth",
+    },
+    user?.email === "tommy1914@gmail.com" && {
+      id: 2,
+      name: "My Clinics",
+      icon: require("./../../assets/images/View.png"),
+      path: "/IT22003546/Add_Clinic/MyClinics",
+    },
+    user?.email === "thihansig@gmail.com" && {
+      id: 8,
+      name: "Upload Medical Records",
+      icon: require("./../../assets/images/medicalRecordsUpload.png"),
+      path: "/IT22350114/AddMedicalRecords/AddRecords",
     },
     {
       id: 3,

@@ -5,6 +5,7 @@ import Header from '../../components/Home/Header';
 import Slider from '../../components/Home/Slider';
 import PopularMentalHealthTips from '../../components/Home/PopularMentalHealthTips';
 import TrendingPhysiotherapyEx from '../../components/Home/TrendingPhysiotherapyEx';
+import OngoingSessions from '../../components/Home/ongoingSession';
 
 export default function Home() {
   const { logout, user } = useAuth();
@@ -23,6 +24,11 @@ export default function Home() {
         }}
         showsVerticalScrollIndicator={false}
       >
+        {/* Ongoing Sessions */}
+        <View style={{ width: '100%' }}>
+          <OngoingSessions />
+        </View>
+
         {/* Slider */}
         <View style={{ width: '100%' }}>
           <Slider />
