@@ -16,6 +16,7 @@ import {
   import { Entypo } from "@expo/vector-icons";
   import ClinicHeader from "../../../components/IT22003546_Components/ClinicHeader";
   import RNPickerSelect from "react-native-picker-select";
+  import DateTimePicker from '@react-native-community/datetimepicker';
   
   export default function EditSession() {
     const router = useRouter();
@@ -30,6 +31,7 @@ import {
     const [location, setLocation] = useState(""); // New field for location
     const [loading, setLoading] = useState(false);
     const [status, setStatus] = useState("");
+    const [showDatePicker, setShowDatePicker] = useState(false);
   
     useEffect(() => {
       fetchSessionDetails();
@@ -88,6 +90,12 @@ import {
         setLoading(false);
       }
     };
+
+    const onChangeDate = (event, selectedDate) => {
+        const currentDate = selectedDate || new Date();
+        setShowDatePicker(false);
+        setSessionDate(currentDate.toISOString().split('T')[0]); // Format date as YYYY-MM-DD
+    };
   
     return (
       <CustomKeyBoardView>
@@ -141,20 +149,34 @@ import {
                       />
   
                       <Text style={{ marginBottom: 5, fontWeight: 'bold', color: Colors.PRIMARY }}>Session Date (YYYY-MM-DD)</Text>
-                      <TextInput
-                          placeholder="Enter session date"
-                          value={sessionDate}
-                          onChangeText={setSessionDate}
-                          style={{
-                              padding: 10,
-                              borderWidth: 1,
-                              borderRadius: 10,
-                              fontSize: 17,
-                              backgroundColor: "#fff",
-                              marginBottom: 20,
-                              borderColor: Colors.PRIMARY,
-                          }}
-                      />
+                      <View>
+                            <TextInput
+                                placeholder="Session Date (YYYY-MM-DD)"
+                                value={sessionDate}
+                                onFocus={() => setShowDatePicker(true)} // Show date picker when focused
+                                style={{
+                                    padding: 15,
+                                    borderWidth: 1,
+                                    borderRadius: 10,
+                                    fontSize: 17,
+                                    backgroundColor: "#f9f9f9",
+                                    marginBottom: 15,
+                                    borderColor: Colors.PRIMARY,
+                                }}
+                            />
+
+                            {/* Date Picker */}
+                            {showDatePicker && (
+                                <DateTimePicker
+                                    testID="dateTimePicker"
+                                    value={new Date(sessionDate || Date.now())} // Use current date if sessionDate is empty
+                                    mode="date"
+                                    is24Hour={true}
+                                    display="default"
+                                    onChange={onChangeDate}
+                                />
+                            )}
+                        </View>
   
                       <Text style={{ marginBottom: 5, fontWeight: 'bold', color: Colors.PRIMARY }}>Doctor Name</Text>
                       <TextInput

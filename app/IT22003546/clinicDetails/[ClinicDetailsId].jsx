@@ -119,6 +119,32 @@ export default function ClinicDetailsId() {
             ToastAndroid.show("Failed to unenroll from clinic. Please try again.", ToastAndroid.LONG);
         }
     };
+
+    const incrementCount = async (sessionId, currentCount) => {
+        setLoading(true);
+        try {
+            const sessionRef = doc(db, "sessions", sessionId); // Adjust your collection name if necessary
+            
+            // Increment the patientCount in Firestore
+            await updateDoc(sessionRef, {
+                currentNum: currentCount + 1, // Increment patient count
+            });
+    
+            // Update local state for immediate feedback in UI
+            setSessions(prevSessions =>
+                prevSessions.map(session =>
+                    session.id === sessionId
+                        ? { ...session, currentNum: currentCount + 1 } // Update patientCount locally
+                        : session
+                )
+            );
+        } catch (error) {
+            console.error("Error updating document: ", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+    
     
 
     return (
@@ -219,47 +245,125 @@ export default function ClinicDetailsId() {
                                 </View>
 
                                 <View style={{ marginTop: 10 }}>
-                                {sessions.length > 0 ? sessions.map(session => (
-                                    <View 
-                                    key={session.id} 
-                                    style={{ 
-                                        padding: 20, // Increased padding for a more spacious feel
-                                        backgroundColor: session.status === "Ongoing" ? '#c8e6c9' : '#ffffff', // Green background for ongoing sessions
-                                        borderRadius: 12, // Softer corners
-                                        marginBottom: 15,
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        elevation: 3, // Shadow for Android
-                                        shadowColor: '#000', // Shadow color for iOS
-                                        shadowOffset: { width: 0, height: 1 }, // Shadow offset for iOS
-                                        shadowOpacity: 0.2, // Shadow opacity for iOS
-                                        shadowRadius: 2, // Shadow blur radius for iOS
-                                    }}
-                                    >
-                                    <View style={{ flexDirection: 'column' }}>
-                                        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#00796b' }}>{session.date}</Text>
-                                        <Text style={{ fontSize: 16, color: '#555' }}>{`${session.startTime} - ${session.endTime}`}</Text>
-                                    </View>
-                                    <View style={{ paddingHorizontal: 10 }}>
-                                        <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#00796b' }}>{session.doctor}</Text>
-                                        <Text style={{ fontSize: 14, color: '#757575' }}>{`L${session.location}`}</Text> 
-                                    </View>
-                                    {user.email === 'tommy1914@gmail.com' && (
-                                        <TouchableOpacity onPress={() => deleteSession(session.id)} style={{ marginLeft: 10 }}>
-                                        <MaterialIcons name="delete" size={24} color="#FF5722" /> 
-                                        </TouchableOpacity>
-                                    )}
-                                    {user.email === 'tommy1914@gmail.com' && (
-                                        <TouchableOpacity onPress={() => updateSession(session.id)} style={{ marginLeft: 10 }}>
-                                        <FontAwesome name="edit" size={24} color="#007BFF" />
-                                        </TouchableOpacity>
-                                    )}
-                                    </View>
-                                )) : (
-                                    <Text style={{ textAlign: "center", color: Colors.GRAY }}>No upcoming sessions available.</Text>
-                                )}
-                                </View>
+                                {sessions.length > 0 ? 
+                                    sessions
+                                        .sort((a, b) => new Date(a.date) - new Date(b.date)) // Sort sessions by date in ascending order
+                                        .map(session => (
+                                            <View 
+                                                key={session.id} 
+                                                style={{ 
+                                                    padding: 15,
+                                                    backgroundColor: '#e0f7fa',
+                                                    borderRadius: 24, 
+                                                    marginBottom: 15,
+                                                    elevation: 3, 
+                                                    shadowColor: '#000',
+                                                    shadowOffset: { width: 0, height: 1 },
+                                                    shadowOpacity: 0.2,
+                                                    shadowRadius: 2,
+                                                    flexDirection: 'row', 
+                                                }}
+                                            >
+                                                {/* Left Side for Date and Month */}
+                                                <View style={{ 
+                                                    width: 80, 
+                                                    height: 80, 
+                                                    flexDirection: 'column', 
+                                                    alignItems: 'center', 
+                                                    justifyContent: 'center',
+                                                    marginRight: 15, 
+                                                    backgroundColor: '#fff',
+                                                    padding: 10,
+                                                    borderRadius: 18, 
+                                                    elevation: 3, 
+                                                    shadowColor: '#000', 
+                                                    shadowOffset: { width: 0, height: 1 },
+                                                    shadowOpacity: 0.2,
+                                                    shadowRadius: 2,
+                                                }}>
+                                                    <Text style={{ fontSize: 42, fontWeight: 'bold', color: '#0d47a1' }}>
+                                                        {new Date(session.date).toLocaleDateString('en-US', { day: 'numeric' })}
+                                                    </Text>
+                                                    <Text style={{ fontSize: 18, color: '#555', marginBottom:10 }}>
+                                                        {new Date(session.date).toLocaleString('en-US', { month: 'short' })}
+                                                    </Text>
+                                                </View>
+
+                                                {/* Right Side for Session Details */}
+                                                <View style={{ 
+                                                    flex: 1, 
+                                                    flexDirection: 'column', 
+                                                    justifyContent: 'center',
+                                                    alignItems: 'flex-start', 
+                                                }}>
+                                                    <View>
+                                                        <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#00796b' }}>{session.doctor}</Text>
+                                                        {session.status === "Ongoing" ? (
+                                                            <Text style={{ fontSize: 16, color: '#757575', fontWeight: 'bold' }}>{`Ongoing No: ${session.currentNum}`}</Text>
+                                                        ) : (
+                                                            <Text style={{ fontSize: 16, color: '#555' }}>{`${session.startTime} - ${session.endTime}`}</Text>
+                                                        )}
+                                                        <Text style={{ fontSize: 14, color: '#757575', fontWeight: 'bold' }}>{`L${session.location}`}</Text>
+                                                    </View>
+                                                </View>
+
+                                                {/* Status Tag */}
+                                                {session.status === "Ongoing" && user.email !== 'tommy1914@gmail.com' && (
+                                                    <View style={{ 
+                                                        position: 'absolute', 
+                                                        top: 10, 
+                                                        right: 10, 
+                                                        backgroundColor: '#4CAF50',
+                                                        paddingVertical: 5,
+                                                        paddingHorizontal: 10,
+                                                        borderRadius: 12,
+                                                    }}>
+                                                        <Text style={{ fontSize: 10, color: '#fff', fontWeight: 'bold' }}>Ongoing</Text>
+                                                    </View>
+                                                )}
+
+                                                {/* Edit and Delete Icons */}
+                                                <View style={{ flexDirection: 'column', marginTop: 10, alignItems: 'center' }}>
+                                                    {session.status === "Ongoing" && user.email === 'tommy1914@gmail.com' && (
+                                                        <TouchableOpacity 
+                                                            onPress={() => incrementCount(session.id, session.currentNum)}
+                                                            style={{ 
+                                                                marginLeft: 10, 
+                                                                marginBottom: 10,
+                                                                backgroundColor: '#00796b', 
+                                                                paddingVertical: 5,
+                                                                paddingHorizontal: 10,
+                                                                borderRadius: 10,
+                                                                width: 50,
+                                                                height: 30,
+                                                                justifyContent: 'center', 
+                                                                alignItems: 'center' 
+                                                            }}
+                                                        >
+                                                            {loading ? (
+                                                                <ActivityIndicator color="#fff" />
+                                                            ) : (
+                                                                <Text style={{ color: '#fff', fontWeight: 'bold' }}>+</Text>
+                                                            )}
+                                                        </TouchableOpacity>
+                                                    )}
+                                                    {user.email === 'tommy1914@gmail.com' && (
+                                                        <TouchableOpacity onPress={() => deleteSession(session.id)} style={{ marginBottom: 10 }}>
+                                                            <MaterialIcons name="delete" size={24} color="#FF5722" /> 
+                                                        </TouchableOpacity>
+                                                    )}
+                                                    {user.email === 'tommy1914@gmail.com' && (
+                                                        <TouchableOpacity onPress={() => updateSession(session.id)}>
+                                                            <FontAwesome name="edit" size={24} color="#007BFF" />
+                                                        </TouchableOpacity>
+                                                    )}
+                                                </View>
+                                            </View>
+                                        )) 
+                                        : (
+                                            <Text style={{ textAlign: "center", color: Colors.GRAY }}>No upcoming sessions available.</Text>
+                                        )}
+                            </View>
 
 
                             </>
