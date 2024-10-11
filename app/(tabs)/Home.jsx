@@ -24,14 +24,16 @@ export default function Home() {
         }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Ongoing Sessions */}
-        <View style={{ width: '100%' }}>
-          <OngoingSessions />
-        </View>
+        
 
         {/* Slider */}
         <View style={{ width: '100%' }}>
           <Slider />
+        </View>
+
+        {/* Ongoing Sessions */}
+        <View style={{ width: '100%' }}>
+          <OngoingSessions />
         </View>
 
         {/* Popular Mental Health Tips */}

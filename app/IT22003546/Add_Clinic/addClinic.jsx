@@ -20,27 +20,27 @@ import ClinicHeader from "../../../components/IT22003546_Components/ClinicHeader
 export default function Add_Clinic() {
   const router = useRouter();
   const [clinicName, setClinicName] = useState("");
-  const [hospitalName, setHospitalName] = useState(""); // New field for hospital name
+  const [hospitalName, setHospitalName] = useState(""); 
   const [clinicDays, setClinicDays] = useState("");
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
 
   useEffect(() => {
-    // Set header title
+    
   }, []);
 
   const onAddNewClinic = async () => {
-    setLoading(true); // Show loading indicator
+    setLoading(true); 
     try {
-      // Validate inputs
+      
       if (!clinicName || !hospitalName || !clinicDays) {
         throw new Error("Please fill all the fields.");
       }
 
       await setDoc(doc(db, "clinics", Date.now().toString()), {
         name: clinicName,
-        hospital: hospitalName, // Added hospital field
-        days: clinicDays.split(",").map(day => day.trim()), // Store days as an array
+        hospital: hospitalName, 
+        days: clinicDays.split(",").map(day => day.trim()), 
       });
 
       ToastAndroid.show("New Clinic Added Successfully", ToastAndroid.LONG);
