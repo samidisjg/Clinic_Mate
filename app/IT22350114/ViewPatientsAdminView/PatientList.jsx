@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
-import { Colors } from "../../../constants/Colors";
+import {
+  View,
+  Text,
+  FlatList,
+  ActivityIndicator,
+  TouchableOpacity,
+  TextInput,
+} from 'react-native';
+import { Colors } from "../../../constants/Colors"; 
 import { db } from '../../../configs/firebaseConfig';
 import { collection, getDocs } from 'firebase/firestore';
 import PatientCard from '../../../components/IT22350114_Compnents/PatientCard';
 import MedicalRecordsAdminHeader from '../../../components/IT22350114_Compnents/MedicalRecordsAdminHeader';
 import { useRouter } from 'expo-router'; 
-import SearchSortBar from '../../../components/IT22350114_Compnents/Styles/SearchSortBar';
+import { Entypo } from '@expo/vector-icons'; // Importing icon library
 
 export default function PatientList() {
   const [patients, setPatients] = useState([]);
@@ -54,39 +61,52 @@ export default function PatientList() {
     });
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#f5f5f5', padding: 20 }}>
+    <View style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
       <MedicalRecordsAdminHeader />
+      
+      {/* Back Button */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 10, paddingTop: 10 }}>
+        <TouchableOpacity onPress={() => router.push("Profile")}>
+          <Entypo name="chevron-left" size={24} color={Colors.PRIMARY} />
+        </TouchableOpacity>
+        <Text style={{ marginLeft: 5, fontSize: 24, fontWeight: 'bold', color: Colors.PRIMARY }}>Patients with Records</Text>
+      </View>
 
-      <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>
-        Patients with Records
-      </Text>
-
-      {/* Search and Sort Bar Component */}
-      <SearchSortBar 
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        sortOrder={sortOrder}
-        setSortOrder={setSortOrder}
+      {/* Search Input */}
+      <TextInput
+        placeholder="Search Patient Username"
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        style={{
+          borderColor: Colors.PRIMARY,
+          borderWidth: 1,
+          borderRadius: 10,
+          padding: 10,
+          marginHorizontal: 20, // Add horizontal margin
+          marginTop: 10,
+        }}
       />
 
       {loading ? (
         <ActivityIndicator size="large" color={Colors.PRIMARY} />
       ) : (
-        filteredPatients.length > 0 ? (
-          filteredPatients.map(patient => (
+        <FlatList
+          data={filteredPatients}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
             <PatientCard
-              key={patient.id}
-              name={patient.username} 
+              key={item.id}
+              name={item.username} 
               onPress={() => {
-                console.log(`Navigating to MedicalRecordsDetail for patient: ${patient.username}`);
-                router.push(`/IT22350114/AdminRecordsView/${patient.username}`); 
+                console.log(`Navigating to MedicalRecordsDetail for patient: ${item.username}`);
+                router.push(`/IT22350114/AdminRecordsView/${item.username}`); 
               }}          
             />
-          ))
-        ) : (
-          <Text style={{ fontSize: 16, color: 'gray' }}>No patients found.</Text>
-        )
+          )}
+          contentContainerStyle={{ paddingBottom: 20 }}
+          ListEmptyComponent={<Text style={{ fontSize: 16, color: 'gray', textAlign: 'center' }}>No patients found.</Text>}
+        />
       )}
-    </ScrollView>
+    </View>
   );
 }

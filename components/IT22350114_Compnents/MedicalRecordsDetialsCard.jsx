@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: Colors.LIGHTBLUE,
     borderRadius: 10,
-    padding: 20,
+    padding: 15,
     marginVertical: 10,
     elevation: 2,
     shadowColor: "#000",
@@ -38,8 +38,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   icon: {
-    width: 40,
-    height: 40,
+    width: 50,
+    height: 50,
     marginRight: 15,
   },
   textContainer: {
