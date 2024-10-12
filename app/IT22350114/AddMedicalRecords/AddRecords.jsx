@@ -1,4 +1,3 @@
-// AddRecords.jsx
 import {
   View,
   Text,
@@ -11,23 +10,22 @@ import {
 import React, { useEffect, useState } from "react";
 import { router, useNavigation } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
-import RNPickerSelect from "react-native-picker-select"; 
+import RNPickerSelect from "react-native-picker-select";
 import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "../../../configs/firebaseConfig";
 import { useAuth } from "../../../context/AuthContextProvider";
 import CustomKeyBoardView from "../../../components/CustomKeyBoardView";
-import DateTimePicker from "@react-native-community/datetimepicker"; 
+import DateTimePicker from "@react-native-community/datetimepicker";
 import formStyles from "../../../components/IT22350114_Compnents/Styles/formStyles";
 import { Entypo } from "@expo/vector-icons";
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen"; // Ensure this line is included
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { Colors } from "../../../constants/Colors";
 import MedicalRecordsAdminHeader from "../../../components/IT22350114_Compnents/MedicalRecordsAdminHeader";
-import Profile from "../../(tabs)/Profile";
+
 export default function AddMedicalRecords() {
   const navigation = useNavigation();
   const [image, setImage] = useState(null);
-  const [patientEmail, setPatientEmail] = useState("");
   const [patientUsername, setPatientUsername] = useState("");
   const [usernames, setUsernames] = useState([]);
   const [reportType, setReportType] = useState("");
@@ -107,7 +105,6 @@ export default function AddMedicalRecords() {
       }
 
       await setDoc(doc(db, "medicalRecords", Date.now().toString()), {
-        patientEmail,
         patientUsername,
         reportType,
         testName: testName === "Other" ? otherTestName : testName,
@@ -134,153 +131,153 @@ export default function AddMedicalRecords() {
       <MedicalRecordsAdminHeader />
       <View style={formStyles.header}>
         <TouchableOpacity onPress={() => router.push("Profile")}>
-        <Entypo name="chevron-left" size={hp(4)} color="#737373" />
+          <Entypo name="chevron-left" size={hp(4)} color="#737373" />
         </TouchableOpacity>
         <Text style={formStyles.title}>Add Medical Records</Text>
       </View>
-    <CustomKeyBoardView>
-      
+      <CustomKeyBoardView>
+        <View style={formStyles.separator} />
+        <View style={formStyles.container}>
+          <View style={formStyles.inputContainer}>
+            <Text style={formStyles.label}>Select Patient Username:</Text>
+            <View style={{ borderColor: Colors.PRIMARY, borderWidth: 1, borderRadius: 10, overflow: 'hidden' }}>
+  <RNPickerSelect
+    onValueChange={(value) => setPatientUsername(value)}
+    items={usernames.map((username) => ({ label: username, value: username }))}
+    style={{
+      inputIOS: {
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        backgroundColor: '#fff',
+      },
+      inputAndroid: {
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        backgroundColor: '#fff',
+      },
+    }}
+  />
+</View>
 
-      <View style={formStyles.separator} />
-      <View style={formStyles.container}>
-        {/* <Text style={formStyles.title}>Add Medical Records</Text> */}
 
-        <View style={formStyles.inputContainer}>
-          <Text style={formStyles.label}>Select Patient Username:</Text>
-          <RNPickerSelect
-            onValueChange={(value) => setPatientUsername(value)}
-            items={usernames.map((username) => ({ label: username, value: username }))}
-            style={{
-              inputIOS: formStyles.input,
-              inputAndroid: formStyles.input,
-            }}
-          />
+            <Text style={formStyles.label}>Report Type:</Text>
+            <View style={formStyles.radioGroup}>
+              {Object.keys(testNamesOptions).map((type) => (
+                <TouchableOpacity
+                  key={type}
+                  style={formStyles.radioButton}
+                  onPress={() => {
+                    setReportType(type);
+                    setTestName(""); // Reset test name
+                    setOtherTestName(""); // Clear the other test name input
+                  }}
+                >
+                  <View style={formStyles.radioButtonCircle}>
+                    {reportType === type && <View style={formStyles.radioButtonSelected} />}
+                  </View>
+                  <Text style={formStyles.radioButtonText}>{type}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
 
-          <Text style={formStyles.label}>Patient Email:</Text>
-          <TextInput
-            value={patientEmail}
-            onChangeText={setPatientEmail}
-            style={formStyles.input}
-          />
+            <Text style={formStyles.label}>Test Name:</Text>
+            <View style={formStyles.radioGroup}>
+              {getTestNamesForReportType().map((test) => (
+                <TouchableOpacity
+                  key={test}
+                  style={formStyles.radioButton}
+                  onPress={() => setTestName(test)}
+                >
+                  <View style={formStyles.radioButtonCircle}>
+                    {testName === test && <View style={formStyles.radioButtonSelected} />}
+                  </View>
+                  <Text style={formStyles.radioButtonText}>{test}</Text>
+                </TouchableOpacity>
+              ))}
 
-          <Text style={formStyles.label}>Report Type:</Text>
-          <View style={formStyles.radioGroup}>
-            {Object.keys(testNamesOptions).map((type) => (
               <TouchableOpacity
-                key={type}
                 style={formStyles.radioButton}
-                onPress={() => {
-                  setReportType(type);
-                  setTestName(""); // Reset test name
-                  setOtherTestName(""); // Clear the other test name input
-                }}
+                onPress={() => setTestName("Other")}
               >
                 <View style={formStyles.radioButtonCircle}>
-                  {reportType === type && <View style={formStyles.radioButtonSelected} />}
+                  {testName === "Other" && <View style={formStyles.radioButtonSelected} />}
                 </View>
-                <Text>{type}</Text>
+                <Text style={formStyles.radioButtonText}>Other</Text>
               </TouchableOpacity>
-            ))}
-          </View>
+            </View>
 
-          <Text style={formStyles.label}>Test Name:</Text>
-          <View style={formStyles.radioGroup}>
-            {getTestNamesForReportType().map((test) => (
-              <TouchableOpacity
-                key={test}
-                style={formStyles.radioButton}
-                onPress={() => setTestName(test)}
-              >
-                <View style={formStyles.radioButtonCircle}>
-                  {testName === test && <View style={formStyles.radioButtonSelected} />}
-                </View>
-                <Text>{test}</Text>
-              </TouchableOpacity>
-            ))}
+            {testName === "Other" && (
+              <TextInput
+                placeholder="Enter Test Name"
+                value={otherTestName}
+                onChangeText={setOtherTestName}
+                style={formStyles.input}
+              />
+            )}
 
-            <TouchableOpacity
-              style={formStyles.radioButton}
-              onPress={() => setTestName("Other")}
-            >
-              <View style={formStyles.radioButtonCircle}>
-                {testName === "Other" && <View style={formStyles.radioButtonSelected} />}
-              </View>
-              <Text>Other</Text>
-            </TouchableOpacity>
-          </View>
-
-          {testName === "Other" && (
+            <Text style={formStyles.label}>Doctor's Name:</Text>
             <TextInput
-              placeholder="Enter Test Name"
-              value={otherTestName}
-              onChangeText={setOtherTestName}
+              placeholder="Doctor's Name"
+              value={doctorName}
+              onChangeText={setDoctorName}
               style={formStyles.input}
             />
-          )}
 
-          <Text style={formStyles.label}>Doctor's Name:</Text>
-          <TextInput
-            placeholder="Doctor's Name"
-            value={doctorName}
-            onChangeText={setDoctorName}
-            style={formStyles.input}
-          />
-
-          <Text style={formStyles.label}>Report Date:</Text>
-          <TouchableOpacity
-            onPress={() => setShowDatePicker(true)}
-            style={formStyles.input}
-          >
-            <Text>{reportDate.toDateString()}</Text>
-          </TouchableOpacity>
-          {showDatePicker && (
-            <DateTimePicker
-              value={reportDate}
-              mode="date"
-              display="default"
-              onChange={(event, selectedDate) => {
-                setShowDatePicker(false);
-                if (selectedDate) setReportDate(selectedDate);
-              }}
-            />
-          )}
-        </View>
-
-        <TouchableOpacity style={{ marginTop: 20 }} onPress={onImagePick}>
-          {!image ? (
-            <Image
-              source={require("./../../../assets/images/uploadFilesImg.jpg")}
-              style={formStyles.uploadImage}
-            />
-          ) : (
-            <Image
-              source={{ uri: image }}
-              style={formStyles.imagePreview}
-            />
-          )}
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          disabled={loading}
-          style={formStyles.button}
-          onPress={onAddNewRecords}
-        >
-          {loading ? (
-            <ActivityIndicator size={"large"} color={"#fff"} />
-          ) : (
-            <Text
-              style={{
-                textAlign: "center",
-                color: "#fff",
-                fontFamily: "outfit-medium",
-              }}
+            <Text style={formStyles.label}>Report Date:</Text>
+            <TouchableOpacity
+              onPress={() => setShowDatePicker(true)}
+              style={formStyles.input}
             >
-              Add New Medical Record
-            </Text>
-          )}
-        </TouchableOpacity>
-      </View>
-    </CustomKeyBoardView>
+              <Text>{reportDate.toDateString()}</Text>
+            </TouchableOpacity>
+            {showDatePicker && (
+              <DateTimePicker
+                value={reportDate}
+                mode="date"
+                display="default"
+                onChange={(event, selectedDate) => {
+                  setShowDatePicker(false);
+                  if (selectedDate) setReportDate(selectedDate);
+                }}
+              />
+            )}
+          </View>
+
+          <TouchableOpacity style={{ marginTop: 20 }} onPress={onImagePick}>
+            {!image ? (
+              <Image
+                source={require("./../../../assets/images/uploadFilesImg.jpg")}
+                style={formStyles.uploadImage}
+              />
+            ) : (
+              <Image
+                source={{ uri: image }}
+                style={formStyles.imagePreview}
+              />
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            disabled={loading}
+            style={formStyles.button}
+            onPress={onAddNewRecords}
+          >
+            {loading ? (
+              <ActivityIndicator size={"large"} color={"#fff"} />
+            ) : (
+              <Text
+                style={{
+                  textAlign: "center",
+                  color: "#fff",
+                  fontFamily: "outfit-medium",
+                }}
+              >
+                Add New Medical Record
+              </Text>
+            )}
+          </TouchableOpacity>
+        </View>
+      </CustomKeyBoardView>
     </View>
   );
 }

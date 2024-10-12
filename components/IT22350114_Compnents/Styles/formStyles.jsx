@@ -1,6 +1,5 @@
-// formStyles.js
 import { StyleSheet } from 'react-native';
-import { Colors } from '../../../constants/Colors'; // Adjust the path according to your project structure
+import { Colors } from '../../../constants/Colors'; 
 
 const formStyles = StyleSheet.create({
   container: {
@@ -11,34 +10,21 @@ const formStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 20,
-    backgroundColor: '#ffffff', // Optional: set a background color
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginRight: 10, // Space between the button and the title
-  },
-  headerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.PRIMARY, // Set the color to match your design
-    fontFamily: 'outfit-medium',
-    marginLeft: 10, // Add margin to separate the text from the arrow
-  },
-  separator: {
-    height: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#d4d4d4',
   },
   title: {
     fontSize: 20,
     fontWeight: 'medium',
     color: Colors.PRIMARY,
     fontFamily: 'outfit-medium',
-    textAlign: 'center',
+    marginLeft: 10,
+  },
+  separator: {
+    height: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#d4d4d4',
   },
   inputContainer: {
-    marginTop: 30,
+    marginTop: 20,
     gap: 10,
     padding: 20,
     backgroundColor: '#ccccff',
@@ -59,6 +45,7 @@ const formStyles = StyleSheet.create({
   radioGroup: {
     flexDirection: 'row',
     marginVertical: 10,
+    flexWrap: 'wrap', // Allows items to wrap to the next line if necessary
   },
   radioButton: {
     flexDirection: 'row',
@@ -81,11 +68,19 @@ const formStyles = StyleSheet.create({
     backgroundColor: Colors.PRIMARY,
     borderRadius: 99,
   },
+  radioButtonText: {
+    fontSize: 16,
+    color: Colors.BLACK,
+    marginBottom: 5, // Add margin to create vertical gap between radio buttons
+
+  },
   button: {
     backgroundColor: Colors.PRIMARY,
     padding: 15,
     borderRadius: 10,
-    marginTop: 20,
+    marginTop: 10,
+    marginBottom: 5, // Add margin to create vertical gap between radio buttons
+
   },
   imagePreview: {
     width: 220,
@@ -101,6 +96,7 @@ const formStyles = StyleSheet.create({
     borderRadius: 15,
     borderColor: Colors.PRIMARY,
   },
+  
 });
 
 export default formStyles;

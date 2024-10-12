@@ -7,8 +7,9 @@ import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { useRouter } from 'expo-router'; 
 import { useLocalSearchParams } from 'expo-router';
 import MedicalRecordsAdminHeader from '../../../components/IT22350114_Compnents/MedicalRecordsAdminHeader';
-import { Entypo } from '@expo/vector-icons'; // Importing icon library
 import Toast from 'react-native-toast-message'; // For toast messages
+import { Entypo } from '@expo/vector-icons'; // Importing icon library
+
 
 export default function MedicalRecordsDetail() {
   const { MedicalRecordsDetail } = useLocalSearchParams();
@@ -76,10 +77,20 @@ export default function MedicalRecordsDetail() {
   return (
      <View style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
       <MedicalRecordsAdminHeader />
-      <ScrollView style={{ flex: 1, backgroundColor: '#f5f5f5', padding: 20 }}>
-        <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>
+      {/* Back Button */}
+      <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10 }}>
+      <TouchableOpacity onPress={() => router.push("../ViewPatientsAdminView/PatientList")}>
+          <Entypo name="chevron-left" size={24} color={Colors.PRIMARY} />
+        </TouchableOpacity>
+        <Text style={{ marginLeft: 5, fontSize: 24, fontWeight: 'bold', color: Colors.PRIMARY }}>
           {MedicalRecordsDetail} Records
         </Text>
+      </View>
+
+      <ScrollView style={{ flex: 1, backgroundColor: '#f5f5f5', padding: 20 }}>
+        {/* <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>
+          {MedicalRecordsDetail} Records
+        </Text> */}
         {loading ? (
           <ActivityIndicator size="large" color={Colors.PRIMARY} />
         ) : (
