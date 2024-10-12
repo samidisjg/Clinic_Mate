@@ -3,9 +3,10 @@ import { View, Text, ScrollView, ActivityIndicator } from "react-native";
 import MedicalRecordCategoryCard from "../../components/IT22350114_Compnents/MedicalRecordCategoryCard";
 import { Colors } from "../../constants/Colors";
 import { db } from "../../configs/firebaseConfig";
-import { collection, getDocs } from "firebase/firestore"; // Import Firestore methods
+import { collection, getDocs, query, where } from "firebase/firestore"; // Import Firestore methods
 import { useRouter } from "expo-router"; // Import useRouter from expo-router
 import MedicalRecordsAdminHeader from "../../components/IT22350114_Compnents/MedicalRecordsAdminHeader";
+import { useAuth } from '../../context/AuthContextProvider';
 
 // Mapping of categories to their corresponding images
 const categoryImages = {
@@ -18,13 +19,24 @@ export default function MedicalRecordsCategory() {
   const router = useRouter(); // Use the router
   const [categories, setCategories] = useState([]); // State for categories
   const [loading, setLoading] = useState(true); // State for loading indicator
+  const { user } = useAuth(); // Access the authenticated user
 
   useEffect(() => {
     const fetchCategories = async () => {
+      setLoading(true); // Set loading to true before fetching
       try {
-        const recordsRef = collection(db, 'medicalRecords'); // Reference to the collection
-        const querySnapshot = await getDocs(recordsRef);
-        
+        const recordsRef = collection(db, "medicalRecords"); // Reference to the collection
+        let q;
+
+        // If the username is 'hansi', fetch all records, otherwise filter by username
+        if (user.username === 'hansi') {
+          q = recordsRef; // Get all records
+        } else {
+          q = query(recordsRef, where("username", "==", user.username)); // Filter by username
+        }
+
+        const querySnapshot = await getDocs(q);
+
         // Extract unique categories from the records
         const uniqueCategories = new Set();
         querySnapshot.forEach(doc => {
@@ -33,17 +45,18 @@ export default function MedicalRecordsCategory() {
             uniqueCategories.add(data.reportType); // Add each reportType to the set
           }
         });
-        
+
         setCategories(Array.from(uniqueCategories)); // Convert set to array and update state
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       } finally {
         setLoading(false); // Stop loading indicator
       }
     };
 
     fetchCategories(); // Call the function to fetch categories
-  }, []);
+  }, [user]); // Ensure to rerun if user changes
+
 
   const handleCategoryPress = (category) => {
     // Navigate to MedicalRecordsDetail and pass the selected category
@@ -72,7 +85,7 @@ export default function MedicalRecordsCategory() {
             />
           ))
         ) : (
-          <Text style={{ fontSize: 16, color: 'gray' }}>No categories found.</Text>
+          <Text style={{ fontSize: 16, color: 'gray' }}>You have no medical records.</Text>
         )}
       </ScrollView>
     </View>

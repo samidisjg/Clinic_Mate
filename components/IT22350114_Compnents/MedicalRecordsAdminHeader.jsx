@@ -38,7 +38,7 @@ export default function MedicalRecordsAdminHeader() {
             fontFamily: "outfit-medium",
           }}
         >
-          Clinics
+          Medical Records
         </Text>
       </View>
       <View>
