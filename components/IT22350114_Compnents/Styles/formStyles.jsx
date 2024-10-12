@@ -71,7 +71,7 @@ const formStyles = StyleSheet.create({
   radioButtonText: {
     fontSize: 16,
     color: Colors.BLACK,
-    marginBottom: 5, // Add margin to create vertical gap between radio buttons
+    marginBottom: 15, // Add margin to create vertical gap between radio buttons
 
   },
   button: {

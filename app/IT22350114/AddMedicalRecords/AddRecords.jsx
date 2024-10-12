@@ -6,20 +6,21 @@ import {
   TextInput,
   ToastAndroid,
   ActivityIndicator,
+  FlatList,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { router, useNavigation } from "expo-router";
 import * as ImagePicker from "expo-image-picker";
-import RNPickerSelect from "react-native-picker-select";
+import RNPickerSelect from "react-native-picker-select"; 
 import { collection, doc, getDocs, setDoc } from "firebase/firestore";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { db, storage } from "../../../configs/firebaseConfig";
 import { useAuth } from "../../../context/AuthContextProvider";
 import CustomKeyBoardView from "../../../components/CustomKeyBoardView";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePicker from "@react-native-community/datetimepicker"; 
 import formStyles from "../../../components/IT22350114_Compnents/Styles/formStyles";
 import { Entypo } from "@expo/vector-icons";
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { widthPercentageToDP as wp, heightPercentageToDP as hp } from "react-native-responsive-screen"; 
 import { Colors } from "../../../constants/Colors";
 import MedicalRecordsAdminHeader from "../../../components/IT22350114_Compnents/MedicalRecordsAdminHeader";
 
@@ -28,6 +29,7 @@ export default function AddMedicalRecords() {
   const [image, setImage] = useState(null);
   const [patientUsername, setPatientUsername] = useState("");
   const [usernames, setUsernames] = useState([]);
+  const [filteredUsernames, setFilteredUsernames] = useState([]);
   const [reportType, setReportType] = useState("");
   const [testName, setTestName] = useState("");
   const [otherTestName, setOtherTestName] = useState("");
@@ -55,6 +57,7 @@ export default function AddMedicalRecords() {
         const querySnapshot = await getDocs(usersRef);
         const usernamesData = querySnapshot.docs.map(doc => doc.data().username);
         setUsernames(usernamesData);
+        setFilteredUsernames(usernamesData);
       } catch (error) {
         console.error('Error fetching usernames:', error);
       }
@@ -62,6 +65,19 @@ export default function AddMedicalRecords() {
 
     fetchUsernames();
   }, []);
+
+  // Filter usernames based on search input
+  const handleSearch = (query) => {
+    setPatientUsername(query);
+    if (query) {
+      const filtered = usernames.filter(username =>
+        username.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredUsernames(filtered);
+    } else {
+      setFilteredUsernames(usernames);
+    }
+  };
 
   // Define test names for each report type
   const testNamesOptions = {
@@ -140,25 +156,30 @@ export default function AddMedicalRecords() {
         <View style={formStyles.container}>
           <View style={formStyles.inputContainer}>
             <Text style={formStyles.label}>Select Patient Username:</Text>
-            <View style={{ borderColor: Colors.PRIMARY, borderWidth: 1, borderRadius: 10, overflow: 'hidden' }}>
-  <RNPickerSelect
-    onValueChange={(value) => setPatientUsername(value)}
-    items={usernames.map((username) => ({ label: username, value: username }))}
-    style={{
-      inputIOS: {
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-        backgroundColor: '#fff',
-      },
-      inputAndroid: {
-        paddingVertical: 10,
-        paddingHorizontal: 10,
-        backgroundColor: '#fff',
-      },
-    }}
-  />
-</View>
+            <TextInput
+              value={patientUsername}
+              onChangeText={handleSearch} // Update search input
+              placeholder="Search Username"
+              style={[formStyles.input, { borderColor: Colors.PRIMARY, borderWidth: 1, borderRadius: 10 }]} // Add border and rounded edges
+            />
 
+            {/* Display filtered usernames */}
+            {filteredUsernames.length > 0 && (
+              <FlatList
+                data={filteredUsernames}
+                keyExtractor={(item) => item}
+                renderItem={({ item }) => (
+                  <TouchableOpacity onPress={() => {
+                    setPatientUsername(item); // Set selected username
+                    setFilteredUsernames([]); // Clear the list after selection
+                  }}>
+                    <Text style={{ padding: 10, fontSize: 16, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: Colors.PRIMARY }}>
+                      {item}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              />
+            )}
 
             <Text style={formStyles.label}>Report Type:</Text>
             <View style={formStyles.radioGroup}>
@@ -175,7 +196,7 @@ export default function AddMedicalRecords() {
                   <View style={formStyles.radioButtonCircle}>
                     {reportType === type && <View style={formStyles.radioButtonSelected} />}
                   </View>
-                  <Text style={formStyles.radioButtonText}>{type}</Text>
+                  <Text>{type}</Text>
                 </TouchableOpacity>
               ))}
             </View>
@@ -191,7 +212,7 @@ export default function AddMedicalRecords() {
                   <View style={formStyles.radioButtonCircle}>
                     {testName === test && <View style={formStyles.radioButtonSelected} />}
                   </View>
-                  <Text style={formStyles.radioButtonText}>{test}</Text>
+                  <Text>{test}</Text>
                 </TouchableOpacity>
               ))}
 
@@ -202,7 +223,7 @@ export default function AddMedicalRecords() {
                 <View style={formStyles.radioButtonCircle}>
                   {testName === "Other" && <View style={formStyles.radioButtonSelected} />}
                 </View>
-                <Text style={formStyles.radioButtonText}>Other</Text>
+                <Text>Other</Text>
               </TouchableOpacity>
             </View>
 
