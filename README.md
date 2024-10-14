@@ -1,16 +1,30 @@
-# Welcome to your Expo app 👋
+<h1>
+  <a href="#"><p>ClinicMate</p></a>
+</h1>
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Featuring an emphasis on SDG 3: Good Health and Well-Being, this study details the design and development process of Clinic-Mate, a mobile application designed to address healthcare management difficulties. By offering a complete platform that integrates numerous functionalities geared to satisfy the needs of both patients and healthcare providers, the app is intended to improve access to healthcare services.
 
-## Get started
+## Table of Contents
+- [Installation](#installation)
+- [Technologies](#technologies)
+- [Features](#features)
 
-1. Install dependencies
+## Installation
+
+To set up the project locally, follow these steps:
+
+1. Clone the repository:
+```bash
+git clone https://github.com/samidisjg/Clinic_Mate.git
+```
+
+2. Install dependencies
 
    ```bash
    npm install
    ```
 
-2. Start the app
+3. Start the app
 
    ```bash
     npx expo start
@@ -21,30 +35,22 @@ In the output, you'll find options to open the app in a
 - [development build](https://docs.expo.dev/develop/development-builds/introduction/)
 - [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
 - [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- [Expo Go](https://expo.dev/go)
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+## Technologies
 
-## Get a fresh project
+- React Native
+- Firebase
+- Expo Go
 
-When you're ready, run:
+## Features
 
-```bash
-npm run reset-project
-```
+- Clinic Enrolment/Session Tracking: This feature makes scheduling and keeping track of clinic appointments easier. By lowering wait times and increasing the effectiveness of healthcare delivery
+- Health Record Management: A safe location to keep and retrieve vital medical records, including prescriptions and reports. This feature ensures a smooth information flow during consultations
+- Mental Health Management: This component offers virtual counselling choices, guided meditation, mental health tips and guidelines. With the objective of improving overall well-being with individualized support to assist users in managing their mental health more effectively.
+- Physiotherapy Management: This feature enables users to keep track of their physiotherapy activities, get individualized fitness regimens, and schedule regular reminders for their treatment regimens
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+<img src="/assets/images/clinicMate.png" alt="clinicMate" style="width: 100%;">
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Copyright
+© 2024 ClinicMate. All rights reserved.

@@ -30,7 +30,7 @@ export default function SignUp() {
   const emailRef = useRef("");
   const passwordRef = useRef("");
   const usernameRef = useRef();
-  const profileUrlRef = useRef();
+  const profileUrlRef = useRef("https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png");
 
   const handleSignUp = async () => {
     if (!emailRef.current || !passwordRef.current || !usernameRef.current || !profileUrlRef.current) {
@@ -231,6 +231,7 @@ export default function SignUp() {
                   fontFamily: "outfit-medium",
                 }}
                 placeholder="Profile Url"
+                defaultValue={profileUrlRef.current}
                 placeholderTextColor={"gray"}
               />
             </View>
