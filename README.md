@@ -50,7 +50,7 @@ In the output, you'll find options to open the app in a
 - Mental Health Management: This component offers virtual counselling choices, guided meditation, mental health tips and guidelines. With the objective of improving overall well-being with individualized support to assist users in managing their mental health more effectively.
 - Physiotherapy Management: This feature enables users to keep track of their physiotherapy activities, get individualized fitness regimens, and schedule regular reminders for their treatment regimens
 
-<img src="/assets/images/clinicMate.png" alt="clinicMate">
+<img src="/assets/images/clinicMate.png" alt="clinicMate" style="width: 100%;">
 
 ## Copyright
 © 2024 ClinicMate. All rights reserved.
