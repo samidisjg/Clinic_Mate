@@ -56,18 +56,18 @@ export default function MenuList() {
       icon: require("./../../assets/images/seeVideo.png"),
       path: "/IT22607232/Add_Exercises/View_PhysioLog",
     },
-    user?.email === "messi@gmail.com" && {
-      id: 1,
-      name: "Add Mental Health Tips & Guides",
-      icon: require("./../../assets/images/add.png"),
-      path: "/IT22577160/mentalHealth/Add_MentalHealth",
-    },
-    user?.email === "messi@gmail.com" && {
-      id: 2,
-      name: "View Mental Health Tips & Guides",
-      icon: require("./../../assets/images/View.png"),
-      path: "/IT22577160/mentalHealth/My_MentalHealth",
-    },
+    // user?.email === "messi@gmail.com" && {
+    //   id: 1,
+    //   name: "Add Mental Health Tips & Guides",
+    //   icon: require("./../../assets/images/add.png"),
+    //   path: "/IT22577160/mentalHealth/Add_MentalHealth",
+    // },
+    // user?.email === "messi@gmail.com" && {
+    //   id: 2,
+    //   name: "View Mental Health Tips & Guides",
+    //   icon: require("./../../assets/images/View.png"),
+    //   path: "/IT22577160/mentalHealth/My_MentalHealth",
+    // },
     user?.email === "tommy1914@gmail.com" && {
       id: 2,
       name: "My Clinics",
