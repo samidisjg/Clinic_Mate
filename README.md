@@ -14,9 +14,9 @@ Featuring an emphasis on SDG 3: Good Health and Well-Being, this study details t
 To set up the project locally, follow these steps:
 
 1. Clone the repository:
-```bash
-git clone https://github.com/samidisjg/Clinic_Mate.git
-```
+   ```bash
+   git clone https://github.com/samidisjg/Clinic_Mate.git
+   ```
 
 2. Install dependencies
 
