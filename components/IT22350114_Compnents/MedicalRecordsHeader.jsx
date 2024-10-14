@@ -11,7 +11,7 @@ import { useRouter } from "expo-router";
 
 const android = Platform.OS === "android";
 
-export default function MedicalRecordsAdminHeader() {
+export default function MedicalRecordsHeader() {
   const { user } = useAuth();
   const { top } = useSafeAreaInsets();
   const router = useRouter();
@@ -38,7 +38,7 @@ export default function MedicalRecordsAdminHeader() {
             fontFamily: "outfit-medium",
           }}
         >
-          Medical Records
+          Clinics
         </Text>
       </View>
       <View>

@@ -46,30 +46,28 @@ export default function OngoingSessions() {
 
   return (
     <View style={{ marginTop: 20 }}>
-      <View
-        style={{
-          padding: 20,
-          display: "flex",
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <Text
+      {sessions.length > 0 && ( // Only render the title if there are ongoing sessions
+        <View
           style={{
-            fontSize: 20,
-            fontFamily: "outfit-bold",
+            padding: 20,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
           }}
         >
-          Ongoing Sessions
-        </Text>
-      </View>
+          <Text
+            style={{
+              fontSize: 20,
+              fontFamily: "outfit-bold",
+            }}
+          >
+            Ongoing Sessions
+          </Text>
+        </View>
+      )}
 
-      {sessions.length === 0 ? ( // Conditional rendering based on sessions
-        <Text style={{ textAlign: "center", color: Colors.GRAY, marginTop: 20 }}>
-          No ongoing sessions available.
-        </Text>
-      ) : (
+      {sessions.length > 0 && ( // Render the FlatList only if there are ongoing sessions
         <FlatList 
           data={sessions}
           horizontal={true}

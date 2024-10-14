@@ -109,6 +109,7 @@ import {
                   justifyContent: "space-between",
                   alignItems: "center",
                   paddingHorizontal: 20,
+                  paddingBottom: 30 
               }}
           >
               <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -283,6 +284,7 @@ import {
                               backgroundColor: Colors.PRIMARY,
                               padding: 15,
                               borderRadius: 10,
+                              marginTop: 10,
                           }}
                           onPress={onUpdateSession}
                           disabled={loading}

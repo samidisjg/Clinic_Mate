@@ -152,19 +152,28 @@ export default function ClinicDetailsId() {
             <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
                 <ClinicHeader />
 
-                <TouchableOpacity 
+                <TouchableOpacity
                     onPress={() => {
                         if (user.email === 'tommy1914@gmail.com') {
                             router.push("/IT22003546/Add_Clinic/MyClinics");
                         } else {
                             router.push("/Clinic");
                         }
-                    }} 
+                    }}
                     style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 10, paddingTop: 10 }}
                 >
-                    <Entypo name="chevron-left" size={24} color="#737373" />
-                    <Text style={{ marginLeft: 5, color: "#737373", fontSize: 16 }}>Back</Text> 
+                    <Entypo name="chevron-left" size={24} color={Colors.PRIMARY} />
+                    {clinicDetails ? (
+                        <Text style={{ fontSize: 24, fontWeight: 'bold', color: Colors.PRIMARY, marginLeft: 5 }}>
+                            {clinicDetails.hospital}
+                        </Text>
+                    ) : null}
                 </TouchableOpacity>
+                {!clinicDetails && (
+                    <Text style={{ fontSize: 16, color: 'gray', paddingLeft: 10 }}>
+                        Clinic details are currently unavailable.
+                    </Text>
+                )}
 
 
 
@@ -176,9 +185,9 @@ export default function ClinicDetailsId() {
                         {clinicDetails ? (
                             <>
                             
-                                <Text style={{ fontSize: 24, fontWeight: 'bold', color: Colors.PRIMARY }}>
+                                {/* <Text style={{ fontSize: 24, fontWeight: 'bold', color: Colors.PRIMARY }}>
                                     {clinicDetails.hospital}
-                                </Text>
+                                </Text> */}
                                 <Text style={{ fontSize: 20, fontWeight: 'bold', marginVertical: 10 }}>
                                     {clinicDetails.name}
                                 </Text>

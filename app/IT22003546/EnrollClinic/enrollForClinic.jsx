@@ -12,6 +12,7 @@ import RNPickerSelect from "react-native-picker-select";
 import { db } from "../../../configs/firebaseConfig"; // Adjust according to your config
 import { collection, getDocs } from "firebase/firestore";
 import ClinicHeader from "../../../components/IT22003546_Components/ClinicHeader";
+import { Entypo } from "@expo/vector-icons";
 
 export default function EnrollForClinic() {
   const router = useRouter();
@@ -85,6 +86,15 @@ export default function EnrollForClinic() {
   return (
     <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
       <ClinicHeader />
+      <TouchableOpacity 
+        onPress={() => {
+          router.push("/Clinic");
+        }} 
+        style={{ flexDirection: 'row', alignItems: 'center', paddingLeft: 10, paddingTop: 10 }}
+    >
+        <Entypo name="chevron-left" size={24} color="#737373" />
+        <Text style={{ marginLeft: 5, color: "#737373", fontSize: 16 }}>Back</Text> 
+    </TouchableOpacity>
 
       <View style={{ padding: 20 }}>
         <Text style={{ fontSize: 24, fontWeight: "bold", color: Colors.PRIMARY }}>
@@ -95,7 +105,7 @@ export default function EnrollForClinic() {
         <RNPickerSelect
           onValueChange={(value) => setHospital(value)}
           items={hospitalOptions}
-          placeholder={{ label: "Any Hospital:", value: null }}
+          placeholder={{ label: "Select Hospital:", value: null }}
           
           style={{
             inputIOS: {
@@ -110,7 +120,7 @@ export default function EnrollForClinic() {
         <RNPickerSelect
           onValueChange={(value) => setClinicType(value)}
           items={clinicTypeOptions}
-          placeholder={{ label: "Any Clinic:", value: null }}
+          placeholder={{ label: "Select Clinic:", value: null }}
           style={{
             inputIOS: {
               padding: 10,
